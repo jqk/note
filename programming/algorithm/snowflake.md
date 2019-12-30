@@ -333,7 +333,7 @@ public class SnowFlake {
 标准雪花算法未考虑以下因素：
 
 1. 多线程
-1. 时间经NTP等同步后向回调整
+1. 时间经NTP等同步后向回调整，即调整后的时间比调整前早
 1. 机器标识的定义
 1. 计数序号的数量
 
@@ -375,20 +375,23 @@ public class SnowFlake {
 
 ```java
 // 以下为类变量定义部分。
-// 不必非到1,048,575再执行复位。
+// 不必非到1,048,575再执行复位。预定义的上边界需与实际bit位能存储的上边界有足够的差距，
+// 以防在进行复位时，还有线程继续增加counter的值，而产生OutOfRange异常。
 final static int MAX_COUNTER = 1000000;
 // 提供多线程安全的序号计数器。
 final AtomicInteger counter = new AtomicInteger(0);
 
-// 以下为类函数定义。只演示如何产生序号。
-public int getSequence() {
+// 以下为类函数定义。只演示如何产生序号。ID中时间、进程标识的拼接不在此处演示。
+// 使用静态函数，效率高些。私有是没必要将序号暴露。这两点与算法本身无关。
+private static int getSequence(@NotNull final AtomicInteger counter) {
     final int count = counter.getAndIncrease();
 
     // 每个线程不再是每到新的一秒就将counter置为0，而是继续使用，直到预设的上边界。
     // 此方法仍不能避免由于对时服务将本地时钟向回调可能造成的ID重复。
     // 但序号范围越大，每秒内事件数量越少，重复的可能性越小。
     if (count >= MAX_COUNTER {
-        syncronized(counter) {
+        synchronized(counter) {
+            // 为避免前一个线程已将counter复位，必须在锁定后进行2位比较，且比较条件相同。
             if (count >= MAX_COUNTER {
                 counter.set(0);
             }
