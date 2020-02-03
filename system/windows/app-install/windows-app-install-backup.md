@@ -2,10 +2,6 @@
 
 * [安装工具评测2019](https://techwiser.com/windows-package-manager/)
 
-* [scoop github](https://github.com/lukesampson/scoop)
-
-其中有关于使用`aria2`多线程下载的设置。
-
 * [chocolatey官网](chocolatey.org)
 
 * [Windows 神器 Cmder Scoop Chocolatey Listary Seer](https://blog.csdn.net/u013205877/article/details/78993311)
