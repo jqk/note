@@ -102,9 +102,16 @@
 
 ### 4.2安装失败及重试
 
-安装失败原因可能很多，但最见的是下载失败，或下载未完整。此时，应先执行`scoop uninstall <app>`命令，然后删除`cache`目录下刚刚下载的文件，最后再次运行`scoop install <app>`执行安装。
+安装失败原因可能很多，但最常见的是下载失败，或下载未完整。此时，应先执行`scoop uninstall <app>`命令，然后删除`cache`目录下刚刚下载的文件，最后再次运行`scoop install <app>`执行安装。
 
 下载在文件名与`<app>`指定的待安装程序的名字有比较直观的逻辑联系。
+
+有时，下载文件从一开始就失败，且反复重试也无法自动下载，例如`telegram`。通过查看`scoop`安装过程报错信息可以得到两个信息：
+
+1. 待下载安装程序的地址。
+2. 保存在`cache`中的文件名。
+
+想办法上网，通过浏览器下载安装程序；将安装程序复制到`cache`并改名；重新安装即可。
 
 ### 4.3下载缓存cache的处理
 
@@ -118,8 +125,72 @@
 
 程序默认安装于`Users\<user>\scoop\apps\<app>`中，其中`user`是用户名，`<app>`是安装时指定的应用程序名称。在该目录下，初始安装时会有一个版本号目录和一个目录链接。
 
-以应用软件`peazip`为例，在用户名为jason的系统中，该程序被安装在`C:\Users\Jason\scoop\apps\peazip`中。在`2020-02-01`时，该目录中有子目录`7.0.1`和软链接`current`。双击`current`会直接进入目录`7.0.1`。
+以应用软件`peazip`为例，在用户名为`Jason`的系统中，该程序被安装在`C:\Users\Jason\scoop\apps\peazip`中。在`2020-02-01`初次安装后，该目录中有子目录`7.0.1`和软链接`current`。双击`current`会直接进入目录`7.0.1`。
 
-`2020-02-03`该程序有版本更新至`7.1.0`。通过命令升级后，在安装目录中建立了新的目录`7.1.0`，`current`也指向该目录。上一版本的`7.0.1`仍被保留，但手动删除不会对系统产生影响。由于配置信息在`persist\peazip`中，所以升级未影响程序行为。
+`2020-02-03`该程序有版本更新至`7.1.0`。通过命令升级后，在安装目录中建立了新的目录`7.1.0`，`current`也指向该目录。上一版本的目录`7.0.1`仍被保留，但手动删除该目录不会对系统产生影响。由于配置信息在`persist\peazip`中，所以升级未影响程序行为。
 
-因此，升级后，旧版程序可以删除。相应的，在`cache`中的旧版安装包也可删除。执行删除的前提是保证新版运行无异常。
+因此，升级后，旧版程序可以删除。相应的，在`cache`中的旧版安装包也可删除。执行删除的前提是保证新版运行无异常，否则若需回退，则要重新下载前一版本。
+
+## 六、已安装程序列表
+
+只安装一些相对不太大的应用软件的绿色版。
+
+|软件名称|版本|bucket|用途|
+|------|------:|------|------|
+|7zip|19.00||压缩工具||
+|aria2|1.35.0-1||多线程下载|
+|calibre|4.9.1|[extras]|文档阅读|
+|cmder|1.3.14||命令行工具|
+|dark|3.11.2||Windows命令行安装工具|
+|diskgenius|5.2.0.884|[extras]|磁盘管理|
+|dismplusplus|10.1.1001.10|[extras]|Windows优化|
+|ditto|3.22.88.0|[extras]|剪裁板工具|
+|dnsjumper|2.1|[extras]|DNS工具|
+|driverstoreexplorer|0.10.58|[extras]|驱动管理|
+|dropit|8.5.1|[extras]|文件分类|
+|everything|1.4.1.935|[extras]|文件查找|
+|filezilla|3.46.3|[extras]|FTP客户端|
+|firefox|72.0.2|[extras]|浏览器|
+|foobar2000-portable|1.5.1|[extras]|音乐播放器|
+|geekuninstaller|1.4.7.142|[extras]|程序卸载|
+|git|2.25.0.windows.1||版本管理|
+|GlaryUtilities|5.136|[ash258]|Windows维护|
+|go|1.13.7||GO语言环境|
+|googlechrome|79.0.3945.130|[extras]|浏览器|
+|gradle|6.1.1||依赖及打包管理|
+|graphviz|2.38||用文本画图|
+|innounp|0.49||程序安装工具|
+|irfanview|4.54|[extras]|看图工具|
+|lessmsi|1.6.91||MSI文件工具|
+|listary|5.00.2843|[extras]|文件查找|
+|manictime|4.4.7.1|[extras]|操作用时统计|
+|maven|3.6.3||依赖及打包管理|
+|notepadplusplus|7.8.4|[extras]|文本编辑器|
+|opera|66.0.3515.60|[extras]|浏览器|
+|paint.net|4.2.9|[extras]|画图工具|
+|peazip|7.1.0|[extras]|压缩工具|
+|plantuml|1.2020.0|[extras]|文本画UML|
+|potplayer|191211|[ash258]|视频播放器|
+|proxifier-portable|3.42|[extras]|网络代理|
+|python|3.8.1||python语言环境|
+|quicklook|3.6.5|[extras]|文件快速预览|
+|recuva|1.53.1087|[extras]|文件恢复工具|
+|shadowsocks|4.1.9.2|[extras]|网络代理|
+|shadowsocksr-csharp|4.9.2|[extras]|网络代理|
+|sharex|13.0.1|[extras]|截图工具|
+|snipaste|1.16.2|[extras]|截图工具|
+|sourcetree|3.3.8|[extras]|GIT源码管理工具|
+|switchhosts|3.5.4|[extras]|DNS工具|
+|sysinternals|December.18.2019|[extras]|Windows小工具|
+|teamviewer|15.2.2756|[extras]|远程管理|
+|telegram|1.9.9|[extras]|即时通讯|
+|thunderbird-portable|68.4.2|[extras]|邮件客户端|
+|vcredist2015|14.0.24215|[extras]|系统运行时环境|
+|vscode|1.41.1|[extras]|跨平台通用IDE|
+|xmind8|3.7.8|[extras]|思维导图|
+
+注意`xmind8`、`plantuml`、`graphviz`等内上程序需要`Java虚拟机`。由于当前系统要求使用`oracle JDK 8`，而使用`scoop`安装只能安装`oracle JDK 13`，其它`版本8的JDK`均非`oracle`出品，所以`Java虚拟机`需手动安装。
+
+## 七、参考资料
+
+[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)
