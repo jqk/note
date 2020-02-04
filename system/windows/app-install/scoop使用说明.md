@@ -7,7 +7,9 @@
 
 ## 二、安装scoop
 
-官方要求在`PowerShell`中运行以下各类命令，无需管理员权限。
+从本节开始说明安装scoop及应用软件的过程，在最后有安装脚本总结。该脚本经过优化，其原理基于从本节开始的说明。
+
+官方要求在`PowerShell`中运行以下各类命令，除`set-executionpolicy`相关语句外，无需管理员权限。
 
 ### 2.1默认安装位置
 
@@ -25,20 +27,26 @@
 
 将`scoop`本身安装到指定目录，例如`C:\Scoop`：
 
-    $env:SCOOP='C:\Scoop'
-    [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+```ps
+$env:SCOOP='C:\Scoop'
+[Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+```
 
 将需要通过`scoop`安装的应用程序安装到指定目录，例如`C:\ScoopApps`：
 
-    $env:SCOOP_GLOBAL='C:\ScoopApps'
-    [Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
+```ps
+$env:SCOOP_GLOBAL='C:\ScoopApps'
+[Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
+```
 
 ### 2.3安装scoop
 
 运行：
 
-    set-executionpolicy remotesigned -scope currentuser
-    Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+```ps
+set-executionpolicy remotesigned -scope currentuser
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+```
 
 安装过程基本没有一次直接成功，总是建立连接有问题。最终都是莫名其妙解决的：
 
@@ -56,16 +64,20 @@
 
 首先安装多线程下载，在github上有说明：
 
-    scoop install aria2
+```ps
+scoop install aria2
+```
 
 另外应加入bucket:
 
-    scoop bucket add extras
-    scoop bucket add nonportable
-    scoop bucket add jetbrains
-    scoop bucket add ash258 https://github.com/Ash258/scoop-Ash258
-    scoop bucket add dorado https://github.com/h404bi/dorado
-    scoop bucket add bear https://github.com/AStupidBear/scoop-bear
+```ps
+scoop bucket add extras
+scoop bucket add nonportable
+scoop bucket add jetbrains
+scoop bucket add ash258 https://github.com/Ash258/scoop-Ash258
+scoop bucket add dorado https://github.com/h404bi/dorado
+scoop bucket add bear https://github.com/AStupidBear/scoop-bear
+```
 
 然后安装`git`，接着再安装其它程序。
 
@@ -79,22 +91,23 @@
 
 实验证明，以下应用下载成功，文件可打开，但安装不成功：
 
-    eagleget-portable
-    IntelliJ-IDEA-Ultimate-portable
-    foxit-reader
+* eagleget-portable
+* foxit-reader
+* IntelliJ-IDEA-Ultimate-portable
 
 有一些程序必需换网络或VPN才能下载：
 
-    manictime
-    potplayer
-    proxifier-portable
+* manictime
+* potplayer
+* proxifier-portable
 
 有一些程序下载速度很慢：
 
-    vscode
-    filezilla
-    listary
-    foobar2000-portable
+* filezilla
+* foobar2000-portable
+* listary
+* opera
+* vscode
 
 `dark`是安装某个程序所需要，虽然安装时一并安装，但最好提前执行。`vcredist2015`是某个程序建议的，但不安装貌似也可以正常运行。`Cmder`需使用`git`，所以`git`应在安装完`aria2`后立即安装。
 
@@ -133,64 +146,214 @@
 
 ## 六、已安装程序列表
 
-只安装一些相对不太大的应用软件的绿色版。
+尽量安装一些相对不太大的应用软件的绿色版。
 
-|软件名称|版本|bucket|用途|
-|------|------:|------|------|
-|7zip|19.00||压缩工具||
-|aria2|1.35.0-1||多线程下载|
-|calibre|4.9.1|[extras]|文档阅读|
-|cmder|1.3.14||命令行工具|
-|dark|3.11.2||Windows命令行安装工具|
-|diskgenius|5.2.0.884|[extras]|磁盘管理|
-|dismplusplus|10.1.1001.10|[extras]|Windows优化|
-|ditto|3.22.88.0|[extras]|剪裁板工具|
-|dnsjumper|2.1|[extras]|DNS工具|
-|driverstoreexplorer|0.10.58|[extras]|驱动管理|
-|dropit|8.5.1|[extras]|文件分类|
-|everything|1.4.1.935|[extras]|文件查找|
-|filezilla|3.46.3|[extras]|FTP客户端|
-|firefox|72.0.2|[extras]|浏览器|
-|foobar2000-portable|1.5.1|[extras]|音乐播放器|
-|geekuninstaller|1.4.7.142|[extras]|程序卸载|
-|git|2.25.0.windows.1||版本管理|
-|GlaryUtilities|5.136|[ash258]|Windows维护|
-|go|1.13.7||GO语言环境|
-|googlechrome|79.0.3945.130|[extras]|浏览器|
-|gradle|6.1.1||依赖及打包管理|
-|graphviz|2.38||用文本画图|
-|innounp|0.49||程序安装工具|
-|irfanview|4.54|[extras]|看图工具|
-|lessmsi|1.6.91||MSI文件工具|
-|listary|5.00.2843|[extras]|文件查找|
-|manictime|4.4.7.1|[extras]|操作用时统计|
-|maven|3.6.3||依赖及打包管理|
-|notepadplusplus|7.8.4|[extras]|文本编辑器|
-|opera|66.0.3515.60|[extras]|浏览器|
-|paint.net|4.2.9|[extras]|画图工具|
-|peazip|7.1.0|[extras]|压缩工具|
-|plantuml|1.2020.0|[extras]|文本画UML|
-|potplayer|191211|[ash258]|视频播放器|
-|proxifier-portable|3.42|[extras]|网络代理|
-|python|3.8.1||python语言环境|
-|quicklook|3.6.5|[extras]|文件快速预览|
-|recuva|1.53.1087|[extras]|文件恢复工具|
-|shadowsocks|4.1.9.2|[extras]|网络代理|
-|shadowsocksr-csharp|4.9.2|[extras]|网络代理|
-|sharex|13.0.1|[extras]|截图工具|
-|snipaste|1.16.2|[extras]|截图工具|
-|sourcetree|3.3.8|[extras]|GIT源码管理工具|
-|switchhosts|3.5.4|[extras]|DNS工具|
-|sysinternals|December.18.2019|[extras]|Windows小工具|
-|teamviewer|15.2.2756|[extras]|远程管理|
-|telegram|1.9.9|[extras]|即时通讯|
-|thunderbird-portable|68.4.2|[extras]|邮件客户端|
-|vcredist2015|14.0.24215|[extras]|系统运行时环境|
-|vscode|1.41.1|[extras]|跨平台通用IDE|
-|xmind8|3.7.8|[extras]|思维导图|
+|软件名称|版本|bucket|用途|初始化|
+|------|------:|------|------|------|
+|7zip|19.00||压缩工具|||
+|aria2|1.35.0-1||多线程下载||
+|besttrace|nightly-20200204|dorado|IP分析工具||
+|beyondcompare|4.3.3.24545|extras|文件对比工具|注册码|
+|calibre|4.9.1|extras|文档阅读||
+|cmder|1.3.14||命令行工具|透明度，特有命令设置|
+|dark|3.11.2||Windows命令行安装工具||
+|diskgenius|5.2.0.884|extras|磁盘管理||
+|dismplusplus|10.1.1001.10|extras|Windows优化||
+|ditto|3.22.88.0|extras|剪裁板工具|快捷键等设置|
+|dnsjumper|2.1|extras|DNS工具||
+|driverstoreexplorer|0.10.58|extras|驱动管理||
+|dropit|8.5.1|extras|文件分类|分类规则设置|
+|everything|1.4.1.935|extras|文件查找||
+|filezilla|3.46.3|extras|FTP客户端||
+|firefox|72.0.2|extras|浏览器|安装必备插件|
+|foobar2000-portable|1.5.1|extras|音乐播放器||
+|geekuninstaller|1.4.7.142|extras|程序卸载||
+|git|2.25.0.windows.1||版本管理||
+|GlaryUtilities|5.136|ash258|Windows维护|启动项等设置|
+|go|1.13.7||GO语言环境||
+|googlechrome|79.0.3945.130|extras|浏览器|安装必备插件|
+|gradle|6.1.1||依赖及打包管理||
+|graphviz|2.38||用文本画图||
+|innounp|0.49||程序安装工具||
+|irfanview|4.54|extras|看图工具||
+|julia|1.3.0|bear|julia语言环境||
+|keepass|2.44|extras|密码管理||
+|lessmsi|1.6.91||MSI文件工具||
+|listary|5.00.2843|extras|文件查找|注册码|
+|manictime|4.4.7.1|extras|操作用时统计||
+|maven|3.6.3||依赖及打包管理||
+|notepadplusplus|7.8.4|extras|文本编辑器||
+|opera|66.0.3515.60|extras|浏览器|安装必备插件|
+|paint.net|4.2.9|extras|画图工具||
+|peazip|7.1.0|extras|压缩工具|语言|
+|plantuml|1.2020.0|extras|文本画UML||
+|potplayer|191211|ash258|视频播放器||
+|proxifier-portable|3.42|extras|网络代理|注册码|
+|python|3.8.1||python语言环境||
+|quicklook|3.6.5|extras|文件快速预览|office相关插件|
+|recuva|1.53.1087|extras|文件恢复工具||
+|shadowsocks|4.1.9.2|extras|网络代理||
+|shadowsocksr-csharp|4.9.2|extras|网络代理||
+|sharex|13.0.1|extras|截图工具|快捷键|
+|smartgit|19.1.6|extras|GIT源码管理客户端|登录|
+|snipaste|1.16.2|extras|截图工具|快捷键|
+|sourcetree|3.3.8|extras|GIT源码管理客户端|登录|
+|switchhosts|3.5.4|extras|DNS工具||
+|teamviewer|15.2.2756|extras|远程管理||
+|teracopy-np|3.26|nonportable|大文件复制加速工具||
+|telegram|1.9.9|extras|即时通讯||
+|thunderbird-portable|68.4.2|extras|邮件客户端||
+|TranslucentTB|2019.2|dorado|任务栏透明化|启动设置|
+|vcredist2015|14.0.24215|extras|系统运行时，不一定安装||
+|vscode|1.41.1|extras|跨平台通用IDE|下载基础插件|
+|xmind8|3.7.8|extras|思维导图|不建议安装Bonjour|
 
 注意`xmind8`、`plantuml`、`graphviz`等内上程序需要`Java虚拟机`。由于当前系统要求使用`oracle JDK 8`，而使用`scoop`安装只能安装`oracle JDK 13`，其它`版本8的JDK`均非`oracle`出品，所以`Java虚拟机`需手动安装。
 
-## 七、参考资料
+## 七、安装脚本
 
-[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)
+### 7.1设置权限
+
+需用管理员身份运行`PowerShell`：
+
+```ps
+set-executionpolicy remotesigned -scope currentuser
+```
+
+### 7.2安装scoop
+
+```ps
+$env:SCOOP='C:\Scoop'
+[Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+```
+
+### 7.3安装应用软件
+
+```ps
+# the first should be zip tool
+scoop install 7zip
+
+# the second is multithread downloading tool
+scoop install aria2
+
+# the third is git, storing bucket
+scoop install git
+
+# add buckets
+scoop bucket add extras
+scoop bucket add nonportable
+scoop bucket add jetbrains
+scoop bucket add ash258 https://github.com/Ash258/scoop-Ash258
+scoop bucket add dorado https://github.com/h404bi/dorado
+scoop bucket add bear https://github.com/AStupidBear/scoop-bear
+
+# then install package tools, may be used by many others
+scoop install dark
+scoop install innounp
+
+# below are alphabet sequence
+scoop install besttrace
+
+# serial number required
+scoop install beyondcompare
+scoop install calibre
+scoop install cmder
+
+# free & pro
+scoop install diskgenius
+scoop install dismplusplus
+scoop install ditto
+scoop install dnsjumper
+scoop install driverstoreexplorer
+scoop install dropit
+scoop install everything
+scoop install filezilla
+scoop install firefox
+scoop install foobar2000-portable
+scoop install geekuninstaller
+
+# free & pro
+scoop install GlaryUtilities
+scoop install go
+scoop install googlechrome
+scoop install gradle
+
+# require jre
+scoop install graphviz
+scoop install irfanview
+scoop install julia
+scoop install keepass
+scoop install lessmsi
+
+# free & pro
+scoop install listary
+scoop install manictime
+scoop install maven
+scoop install notepadplusplus
+scoop install opera
+scoop install paint.net
+scoop install peazip
+
+# require jre
+scoop install plantuml
+scoop install potplayer
+
+# serial number required
+scoop install proxifier-portable
+scoop install python
+scoop install quicklook
+scoop install recuva
+scoop install shadowsocks
+scoop install shadowsocksr-csharp
+scoop install sharex
+
+# require jre, free & pro
+scoop install smartgit
+scoop install snipaste
+scoop install sourcetree
+scoop install switchhosts
+
+# free & pro
+scoop install teamviewer
+scoop install teracopy-np
+scoop install telegram
+scoop install thunderbird-portable
+scoop install TranslucentTB
+scoop install vscode
+
+# require jre
+scoop install xmind8
+```
+
+### 7.4右键菜单
+
+通过`scoop`安装`notepad++`不会自动在右键菜单中添加使用`Edit with Notepad++`条目，应建立一个文本文件，以`.reg`作为扩展名，包含以下内容：
+
+```registry
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++]
+"Icon"="\"C:\\Users\\Jason\\scoop\\apps\\notepadplusplus\\current\\notepad++.exe\""
+"MultiSelectMode"="Single"
+
+[HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++\Command]
+@="\"C:\\Users\\Jason\\scoop\\apps\\notepadplusplus\\current\\notepad++.exe\" \"%1\""
+```
+
+双击该文件，将会更新注册表，再启动文件管理器，在右键菜单中会增加`Edit with Notepad++`条目。
+
+安装完`vscode`会有提示：
+
+```text
+Add Visual Studio Code as a context menu option by running: "C:\Scoop\apps\vscode\current\vscode-install-context.reg"
+```
+
+通过文件管理器双击该文件，将会更新注册表，再启动文件管理器，在右键菜单中会增加`open with code`条目。
+
+### 7.5应用程序设置
+
+## 八、参考资料
+
+《[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)》有对于自建`bucket`的简单说明。
