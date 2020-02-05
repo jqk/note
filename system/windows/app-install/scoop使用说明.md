@@ -65,7 +65,12 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 首先安装多线程下载，在github上有说明：
 
 ```ps
-scoop install aria2
+scoop install aria2                     # 安装多线程应用。
+
+# 以下为检查或设置是否使用多线程下载功能的命令。
+scoop config aria2-enabled              # 显示是否使用多线程下载，默认为true。
+scoop config aria2-enabled true         # 启用多线程下载。
+scoop config aria2-enabled false        # 关闭多线程下载。
 ```
 
 另外应加入bucket:
@@ -128,9 +133,28 @@ scoop bucket add bear https://github.com/AStupidBear/scoop-bear
 
 ### 4.3下载缓存cache的处理
 
+### 4.3.1保存已下载文件供后续使用
+
 安装过程中下载的文件被放置在`cache`目录中，安装之后删除这些文件不会对系统产生任何影响。但如果不删除这些文件，在执行`scoop uninstall <app>`卸载应用后再执行`scoop install <app>`将省略下载文件的过程。
 
-因此，可以备份这些文件，在需要使用`scoop`在其它机器上安装软件时，将这些文件复制到`cache`目录下，即可避免下载安装文件。唯一可虑的是，所需安装的软件版本有更新。
+因此，可以备份这些文件，在需要使用`scoop`在其它机器上安装软件时，将这些文件复制到`cache`目录下，即可避免下载安装文件。唯一可虑的是，所需安装的软件版本有更新。如果是这种情况，`cache`中的文件是无效的。以`potplayer`为例，已安装的版本在`cache`中对应的文件是`potplayer#191211#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20191211_PotPlayerSetup64.exe_cosi.7z`，而新版是`potplayer#200204#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20200204_PotPlayerSetup64.exe_dl.7z`。此时，`scoop`会下载新文件，而不使用旧文件。当升级成功后，旧文件可以删除。
+
+同一个程序，可能在不同的`bucket`中都有定义，例如`potplayer`在`ash258`和`extra`中都有定义。如果使用`scoop install potplayer`安装，将使用排序靠前的`ash258`。若要使用`extra`，需在命令行中指定，即`scoop install extras/potplayer`。
+
+注意这两个`bucket`指向的安装文件是相同的，但它们下载结果文件命令不同。`ash258`的文件以`cosi.7z`结尾，而`extra`的文件以`dl.7z`结尾，文件名的其它部分相同，下载的也是相同的文件。
+
+### 4.3.2使用软链接共享已下载文件
+
+在A机上安装好`scoop`后，进入其目录，因为尚未安装任何程序，所以`cache`为空。在Server端(如192.168.0.1)配置好共享目录，需可读写，例如`server_cache`，在A机上执行以下命令：
+
+```ps
+rd cache
+mklink /d cache \\192.168.0.1\server_cache
+```
+
+该操作将空目录`cache`删除，然后建立了一个指向共享目录的软链接，取名仍为`cache`以欺骗`scoop`。经实测，在B机上也做如此操作后，两台机器的`scoop`可共享下载文件。通过该方式，可使多台主机共享一份下载，即提高速度，又节省空间。
+
+**注意**，理论上对`apps`目录也可做相同的处理，因为其配置保存位置与安装目录。但未测试。
 
 ## 五、升级应用程序
 
@@ -148,67 +172,69 @@ scoop bucket add bear https://github.com/AStupidBear/scoop-bear
 
 尽量安装一些相对不太大的应用软件的绿色版。
 
-|软件名称|版本|bucket|用途|初始化|
-|------|------:|------|------|------|
-|7zip|19.00||压缩工具|||
-|aria2|1.35.0-1||多线程下载||
-|besttrace|nightly-20200204|dorado|IP分析工具||
-|beyondcompare|4.3.3.24545|extras|文件对比工具|注册码|
-|calibre|4.9.1|extras|文档阅读||
-|cmder|1.3.14||命令行工具|透明度，特有命令设置|
-|dark|3.11.2||Windows命令行安装工具||
-|diskgenius|5.2.0.884|extras|磁盘管理||
-|dismplusplus|10.1.1001.10|extras|Windows优化||
-|ditto|3.22.88.0|extras|剪裁板工具|快捷键等设置|
-|dnsjumper|2.1|extras|DNS工具||
-|driverstoreexplorer|0.10.58|extras|驱动管理||
-|dropit|8.5.1|extras|文件分类|分类规则设置|
-|everything|1.4.1.935|extras|文件查找||
-|filezilla|3.46.3|extras|FTP客户端||
-|firefox|72.0.2|extras|浏览器|安装必备插件|
-|foobar2000-portable|1.5.1|extras|音乐播放器||
-|geekuninstaller|1.4.7.142|extras|程序卸载||
-|git|2.25.0.windows.1||版本管理||
-|GlaryUtilities|5.136|ash258|Windows维护|启动项等设置|
-|go|1.13.7||GO语言环境||
-|googlechrome|79.0.3945.130|extras|浏览器|安装必备插件|
-|gradle|6.1.1||依赖及打包管理||
-|graphviz|2.38||用文本画图||
-|innounp|0.49||程序安装工具||
-|irfanview|4.54|extras|看图工具||
-|julia|1.3.0|bear|julia语言环境||
-|keepass|2.44|extras|密码管理||
-|lessmsi|1.6.91||MSI文件工具||
-|listary|5.00.2843|extras|文件查找|注册码|
-|manictime|4.4.7.1|extras|操作用时统计||
-|maven|3.6.3||依赖及打包管理||
-|notepadplusplus|7.8.4|extras|文本编辑器||
-|opera|66.0.3515.60|extras|浏览器|安装必备插件|
-|paint.net|4.2.9|extras|画图工具||
-|peazip|7.1.0|extras|压缩工具|语言|
-|plantuml|1.2020.0|extras|文本画UML||
-|potplayer|191211|ash258|视频播放器||
-|proxifier-portable|3.42|extras|网络代理|注册码|
-|python|3.8.1||python语言环境||
-|quicklook|3.6.5|extras|文件快速预览|office相关插件|
-|recuva|1.53.1087|extras|文件恢复工具||
-|shadowsocks|4.1.9.2|extras|网络代理||
-|shadowsocksr-csharp|4.9.2|extras|网络代理||
-|sharex|13.0.1|extras|截图工具|快捷键|
-|smartgit|19.1.6|extras|GIT源码管理客户端|登录|
-|snipaste|1.16.2|extras|截图工具|快捷键|
-|sourcetree|3.3.8|extras|GIT源码管理客户端|登录|
-|switchhosts|3.5.4|extras|DNS工具||
-|teamviewer|15.2.2756|extras|远程管理||
-|teracopy-np|3.26|nonportable|大文件复制加速工具||
-|telegram|1.9.9|extras|即时通讯||
-|thunderbird-portable|68.4.2|extras|邮件客户端||
-|TranslucentTB|2019.2|dorado|任务栏透明化|启动设置|
-|vcredist2015|14.0.24215|extras|系统运行时，不一定安装||
-|vscode|1.41.1|extras|跨平台通用IDE|下载基础插件|
-|xmind8|3.7.8|extras|思维导图|不建议安装Bonjour|
+|软件名称|版本|bucket|用途|初始化任务|原始启动命令|
+|------|------:|------|------|------|------|
+|7zip|19.00||压缩工具||7z|
+|aria2|1.35.0-1||多线程下载||aria2c|
+|besttrace|nightly-20200204|dorado|路由跟踪||17monipdb|
+|beyondcompare|4.3.3.24545|extras|文件对比|注册码|bcomp|
+|calibre|4.9.1|extras|文档阅读||calibre|
+|cmder|1.3.14||增强命令行|透明度，特有命令设置|cmder|
+|dark|3.11.2||命令行安装工具||dark|
+|diskgenius|5.2.0.884|extras|磁盘管理||diskgenius|
+|dismplusplus|10.1.1001.10|extras|系统优化||dism++x64|
+|ditto|3.22.88.0|extras|多剪裁板|中文及快捷键|ditto|
+|dnsjumper|2.1|extras|DNS工具||dnsjumper|
+|driverstoreexplorer|0.10.58|extras|驱动管理||rapr|
+|dropit|8.5.1|extras|文件分类|分类规则设置||
+|everything|1.4.1.935|extras|文件查找||everything|
+|filezilla|3.46.3|extras|FTP客户端||filezilla|
+|firefox|72.0.2|extras|浏览器|安装必备插件|firefox|
+|foobar2000-portable|1.5.1|extras|音乐播放器||foobar2000|
+|geekuninstaller|1.4.7.142|extras|程序卸载||geek|
+|git|2.25.0.windows.1||版本管理||git|
+|GlaryUtilities|5.136|ash258|系统维护|启动项等设置||
+|go|1.13.7||GO语言环境|go|
+|googlechrome|79.0.3945.130|extras|浏览器|安装必备插件|chrome|
+|gradle|6.1.1||依赖管理||gradle|
+|graphviz|2.38||用文本画图||gvedit|
+|innounp|0.49||程序安装|||
+|irfanview|4.54|extras|看图工具||irfanview|
+|julia|1.3.0|bear|julia语言环境||julia|
+|keepass|2.44|extras|密码管理||keepass|
+|lessmsi|1.6.91||MSI文件工具||lessmsi|
+|listary|5.00.2843|extras|文件查找|注册码||
+|manictime|4.4.7.1|extras|操作用时统计|||
+|maven|3.6.3||依赖及打包管理||mvn|
+|notepadplusplus|7.8.4|extras|文本编辑器||notepad++|
+|opera|66.0.3515.60|extras|浏览器|安装必备插件||
+|paint.net|4.2.9|extras|画图工具||paintdotnet|
+|peazip|7.1.0|extras|压缩工具|语言|peazip|
+|plantuml|1.2020.0|extras|文本画UML||plantuml|
+|potplayer|191211|ash258|视频播放器|||
+|proxifier-portable|3.42|extras|网络代理|注册码|proxifier|
+|python|3.8.1||python语言环境||python|
+|quicklook|3.6.5|extras|文件快速预览|office相关插件||
+|recuva|1.53.1087|extras|文件恢复||recuva|
+|shadowsocks|4.1.9.2|extras|网络代理||shadowsocks|
+|shadowsocksr-csharp|4.9.2|extras|网络代理||shadowsocksr-dotnet4.0|
+|sharex|13.0.1|extras|截图工具|快捷键|sharex|
+|smartgit|19.1.6|extras|GIT客户端|登录|smartgit|
+|snipaste|1.16.2|extras|截图工具|快捷键|snipaste|
+|sourcetree|3.3.8|extras|GIT客户端|登录|sourcetree|
+|switchhosts|3.5.4|extras|DNS工具|||
+|teamviewer|15.2.2756|extras|远程管理||teamviewer|
+|teracopy-np|3.26|nonportable|复制加速|||
+|telegram|1.9.9|extras|即时通讯||telegram|
+|thunderbird-portable|68.4.2|extras|邮件客户端||thunderbird|
+|TranslucentTB|2019.2|dorado|任务栏透明化|启动设置||
+|vcredist2015|14.0.24215|extras|系统运行时|不一定安装||
+|vscode|1.41.1|extras|跨平台IDE|基础插件|code|
+|xmind8|3.7.8|extras|思维导图|不建议安装Bonjour||
 
-注意`xmind8`、`plantuml`、`graphviz`等内上程序需要`Java虚拟机`。由于当前系统要求使用`oracle JDK 8`，而使用`scoop`安装只能安装`oracle JDK 13`，其它`版本8的JDK`均非`oracle`出品，所以`Java虚拟机`需手动安装。
+注意`xmind8`、`smartgit`、`plantuml`及`graphviz`等程序需要`Java虚拟机`。前两者自带`JRE`，无需单独下载虚拟机。
+
+由于当前系统要求使用`oracle JDK 8`，而使用`scoop`安装只能安装`oracle JDK 13`，其它`版本8的JDK`均非`oracle`出品，所以`Java虚拟机`需手动安装。
 
 ## 七、安装脚本
 
@@ -222,6 +248,10 @@ set-executionpolicy remotesigned -scope currentuser
 
 ### 7.2安装scoop
 
+#### 7.2.1安装
+
+安装`scoop`及应用软件无需管理员权限，直接在`PowerShell`运行：
+
 ```ps
 $env:SCOOP='C:\Scoop'
 [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
@@ -229,7 +259,27 @@ $env:SCOOP='C:\Scoop'
 Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
 ```
 
+#### 7.2.2准备`cache`共享空间
+
+在地址为`192.168.163.1`(本人笔记本`VMware`主地址)的主机上建立虚拟机共享目录`vm_share`，并在该目录下建立专用于共享下载文件的目录`scoop\cache`。确保该目录可读写。
+
+#### 7.2.3
+
+在`命令行`中执行：
+
+```ps
+c:
+cd \Scoop
+del cache
+rd cache
+mklink /d cache \\192.168.163.1\vm_share\scoop\cache
+```
+
+以上过程首先进入`scoop`目录，然后删除`cache`，最后建立软件链接。
+
 ### 7.3安装应用软件
+
+在安装应用软件前，应先安装`Java虚拟机`，否则，应在以下脚本中安装，但版本不是`Java8`。
 
 ```ps
 # the first should be zip tool
@@ -252,17 +302,17 @@ scoop bucket add bear https://github.com/AStupidBear/scoop-bear
 # then install package tools, may be used by many others
 scoop install dark
 scoop install innounp
+scoop install lessmsi
+
+# install JDK when required. it's not version 8
+# scoop install oraclejdk
 
 # below are alphabet sequence
 scoop install besttrace
-
-# serial number required
-scoop install beyondcompare
+scoop install beyondcompare         # serial number required
 scoop install calibre
 scoop install cmder
-
-# free & pro
-scoop install diskgenius
+scoop install diskgenius            # free & pro
 scoop install dismplusplus
 scoop install ditto
 scoop install dnsjumper
@@ -273,59 +323,44 @@ scoop install filezilla
 scoop install firefox
 scoop install foobar2000-portable
 scoop install geekuninstaller
-
-# free & pro
-scoop install GlaryUtilities
+scoop install GlaryUtilities        # free & pro
 scoop install go
 scoop install googlechrome
 scoop install gradle
-
-# require jre
-scoop install graphviz
+scoop install graphviz              # require jre
 scoop install irfanview
 scoop install julia
 scoop install keepass
-scoop install lessmsi
-
-# free & pro
-scoop install listary
-scoop install manictime
+scoop install listary               # free & pro
+scoop install manictime             # free & pro
 scoop install maven
 scoop install notepadplusplus
 scoop install opera
 scoop install paint.net
 scoop install peazip
-
-# require jre
-scoop install plantuml
+scoop install plantuml              # require jre
 scoop install potplayer
-
-# serial number required
-scoop install proxifier-portable
+scoop install proxifier-portable    # serial number required
 scoop install python
 scoop install quicklook
 scoop install recuva
 scoop install shadowsocks
 scoop install shadowsocksr-csharp
 scoop install sharex
-
-# require jre, free & pro
-scoop install smartgit
+scoop install smartgit              # free & pro, include openjdk
 scoop install snipaste
 scoop install sourcetree
 scoop install switchhosts
-
-# free & pro
-scoop install teamviewer
+scoop install teamviewer            # free & pro
 scoop install teracopy-np
 scoop install telegram
 scoop install thunderbird-portable
 scoop install TranslucentTB
 scoop install vscode
-
-# require jre
-scoop install xmind8
+scoop install xmind8                # free & pro, include oracle jre 8
 ```
+
+以上程序安装后`apps`共约`4.6GB`，`cache`共约`2.4GB`。
 
 ### 7.4右键菜单
 
@@ -335,11 +370,11 @@ scoop install xmind8
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++]
-"Icon"="\"C:\\Users\\Jason\\scoop\\apps\\notepadplusplus\\current\\notepad++.exe\""
+"Icon"="\"C:\\Scoop\\apps\\notepadplusplus\\current\\notepad++.exe\""
 "MultiSelectMode"="Single"
 
 [HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++\Command]
-@="\"C:\\Users\\Jason\\scoop\\apps\\notepadplusplus\\current\\notepad++.exe\" \"%1\""
+@="\"C:\\Scoop\\apps\\notepadplusplus\\current\\notepad++.exe\" \"%1\""
 ```
 
 双击该文件，将会更新注册表，再启动文件管理器，在右键菜单中会增加`Edit with Notepad++`条目。
@@ -353,6 +388,8 @@ Add Visual Studio Code as a context menu option by running: "C:\Scoop\apps\vscod
 通过文件管理器双击该文件，将会更新注册表，再启动文件管理器，在右键菜单中会增加`open with code`条目。
 
 ### 7.5应用程序设置
+
+vscode插件：`中文显示`，`Python`，`Go`，`GitLens`，`Julia`，`PowerShell`，`YAML`，`Rainbow Brackets`，`CodeRunner`，`Visual Studio IntelliCode`。
 
 ## 八、参考资料
 
