@@ -618,6 +618,17 @@ Add Visual Studio Code as a context menu option by running: "C:\Scoop\apps\vscod
 
 vscode插件：`中文显示`，`Python`，`Go`，`GitLens`，`Julia`，`PowerShell`，`YAML`，`Rainbow Brackets`，`CodeRunner`，`Visual Studio IntelliCode`。
 
+### 7.6最简安装总结
+
+最简安装只安装最基本的`scoop`组成及系统所需的应用程序。同时，最简安装假设`scoop`已经在其它主机安装过，并在`\\ssd-win10\vm_share\scoop`下建立好了共享。
+
+以`管理员`身份打开`PowerShell`和`命令行`，然后依次执行
+
+1. 以`管理员`身份打开`命令行`，执行[scoop1-run-admin.bat](scoop\scoop1-run-admin.bat)。遇到命令行提问选择`D`，即目录。
+2. 以`管理员`身份打开`PowerShell`，手工逐条执行[scoop2-run-admin-manual.ps1](scoop/scoop2-run-admin-manual.ps1)中的命令。对第一条设置权限命令选择`A`作为应答。
+3. 在打开的`PowerShell`中直接运行[scoop3-install-apps](scoop/scoop3-install-apps.ps1)。
+4. 在打开的`命令行`中直接运行[scoop4-notepad++.reg](scoop/scoop4-notepad++.reg)。该操作调起注册表编辑器并询问是否导入注册表信息，选择`是`。
+
 ## 八、参考资料
 
 《[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)》有对于自建`bucket`的简单说明。

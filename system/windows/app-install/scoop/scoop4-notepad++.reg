@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++]
+"Icon"="\"C:\\Scoop\\apps\\notepadplusplus\\current\\notepad++.exe\""
+"MultiSelectMode"="Single"
+
+[HKEY_CLASSES_ROOT\*\shell\Edit with Notepad++\Command]
+@="\"C:\\Scoop\\apps\\notepadplusplus\\current\\notepad++.exe\" \"%1\""
