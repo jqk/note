@@ -546,9 +546,11 @@ scoop install dnsjumper
 scoop install driverstoreexplorer
 scoop install dropit
 scoop install everything
+scoop install ffmpeg
 scoop install filezilla
 scoop install firefox
 scoop install foobar2000-portable
+scoop install foxit-reader
 scoop install geekuninstaller
 scoop install GlaryUtilities        # free & pro
 scoop install go
@@ -556,6 +558,7 @@ scoop install googlechrome
 scoop install gradle
 scoop install graphviz              # require jre
 scoop install irfanview
+scoop install IntelliJ-IDEA-Ultimate-portable
 scoop install julia
 scoop install keepass
 scoop install listary               # free & pro
@@ -583,11 +586,13 @@ scoop install teracopy-np
 scoop install telegram
 scoop install thunderbird-portable
 scoop install TranslucentTB
+scoop install typora
 scoop install vscode
+scoop install wget
 scoop install xmind8                # free & pro, include oracle jre 8
 ```
 
-以上程序安装后`apps`共约`4.6GB`，`cache`共约`2.4GB`。
+以上程序安装后`apps`共约`5.1GB`，`cache`共约`2.5GB`。
 
 ### 7.4右键菜单
 
