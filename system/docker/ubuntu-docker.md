@@ -77,12 +77,24 @@ $ sudo /etc/init.d/docker restart
 切换当前会话到新`group`或者重启`X`会话。这一步是必须的，否则因为`groups`命令获取到的是缓存的组信息，刚添加的组信息未能生效，所以`docker images`等命令执行时同样有错。执行：
 
 ```bash
-newgrp - docker
+# 切换组。
+$ newgrp - docker
 ```
 
-打开新的终端窗口，`docker images`等命令无需再加前缀`sudo`。
+在当前终端窗口，`docker images`等命令无需再加前缀`sudo`。但切换到新终端窗口，会报如下错误，只有重启操作系统才会生效，即使重新登录都不行：
 
-实际执行过程中，完成以上步骤后，一会儿要求`sudo`，一会儿无需`sudo`。最后重启系统，一切 OK。
+```text
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.39/info: dial unix /var/run/docker.sock: connect: permission denied
+```
+
+此时执行：
+
+```bash
+# 赋予权限。
+$ sudo chmod a+rw /var/run/docker.sock
+```
+
+至此，不再需要前缀`sudo`。
 
 ### 1.3 更改镜像源
 
@@ -108,23 +120,23 @@ service docker restart
 需要下载`centos`及`java8`镜像。通过下列命令查询相关镜像：
 
 ```bash
-sudo docker search centos
-sudo docker search java:8
+docker search centos
+docker search java:8
 ```
 
 从结果发现，`centos`镜像是`Offical`的，而`java8`不是。执行：
 
 ```bash
-sudo docker pull centos
-sudo docker pull java:8
+docker pull centos
+docker pull java:8
 ```
 
 `centos`默认下载`lastest`。执行：
 
 ```bash
-sudo docker images
+docker images
 # 或
-sudo docker image list
+docker image list
 ```
 
 得到相同结果：
