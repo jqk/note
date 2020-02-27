@@ -1098,6 +1098,8 @@ $ docker start yxy-web-map
 1. [关于 Docker 目录挂载的总结](https://www.cnblogs.com/ivictor/p/4834864.html)：对目录挂载比较细致的总结。
 1. [IntelliJ IDEA 快速实现 Docker 镜像部署](https://my.oschina.net/wuweixiang/blog/2874064)：图文并茂，很详细，尚未实验。
 1. [优雅的终止 docker 容器](https://xiaozhou.net/stop-docker-container-gracefully-2016-09-08.html)：对如何结束容器的说明很细，有`go`语言获取`SIGTERM`信号的示例。
+1. [IntelliJ IDEA快速实现Docker镜像部署](https://my.oschina.net/wuweixiang/blog/2874064)：应该是一系统文章的一部分。尚未尝试。
+1. [IntelliJ IDEA安装docker插件](https://blog.csdn.net/sealir/article/details/81200662)：未尝试。
 
 ### 6.2  教程
 
