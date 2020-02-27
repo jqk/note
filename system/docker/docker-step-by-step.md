@@ -1084,6 +1084,8 @@ $ docker start yxy-web-map
 
 ### 6.1  参考文章
 
+1. [在 Ubuntu 16.04 LTS 上 离线安装 Docker / Docker-compose](https://www.cnblogs.com/atuotuo/p/9272368.html)：镜像目录不是[最新的](https://download.docker.com/linux/static/stable/x86_64/)。
+1. [Linux下离线安装Docker](https://www.cnblogs.com/luoSteel/p/10038954.html)：有对docker服务配置的修改。
 1. [Ubuntu18.04 安装 Docker](https://blog.csdn.net/u010889616/article/details/80170767)
 1. [Ubuntu18.04 下 Docker CE 安装](https://www.jianshu.com/p/07e405c01880)
 1. [Docker 镜像的备份和恢复](https://blog.csdn.net/k21325/article/details/70184253)
