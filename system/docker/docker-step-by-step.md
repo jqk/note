@@ -1,8 +1,8 @@
-# 1. 在 docker 中使用 jdk8 详细说明
+# jdk8 详细说明
 
-## 1.1. 目标说明及环境准备
+## 一、  目标说明及环境准备
 
-### 1.1.1. 目标说明
+### 1.1  目标说明
 
 通过完成以下实验操作，对`docker`镜像构建、容器运行有相对深入的了解，能够初步地使用`docker`及`java`程序部署。
 
@@ -10,7 +10,7 @@
 
 `docker`的基本概念，如`镜像`、`容器`、`仓库`以及各类命令具体参数的意义请自行百度。
 
-### 1.1.2. 操作系统
+### 1.2  操作系统
 
 操作系统选择`Ubuntu 19.10`。选择`Ubuntu`是因为其界面在`linux`中比较友善，如果命令不熟，可使用图形界面工具。选择`19.10`版是因为在以前的版本中，字体调整大小很困难，在高分屏下，字调到最大也很小，眼睛都要看瞎了；而`19.10`可直接设置`200%`的显示比例，在高分屏下很正常。
 
@@ -18,15 +18,15 @@
 
 操作系统安装在`VMware Workstation 15`中。
 
-### 1.1.3. 工作用户及目录
+### 1.3  工作用户及目录
 
 本文均以用户`jason`执行实验，若实验时用户不同，请自行替换。
 
 建立目录`/home/jason/docker-demo`，所有实验均在此目录下执行，在以后的说明中称为`实验目录`。
 
-## 1.2. 安装 docker
+## 二、  docker
 
-### 1.2.1. 在线安装
+### 2.1  在线安装
 
 执行：
 
@@ -56,7 +56,7 @@ Synchronizing state of docker.service with SysV service script with /lib/systemd
 Executing: /lib/systemd/systemd-sysv-install enable docker
 ```
 
-### 1.2.2. 更改镜像源
+### 2.2  更改镜像源
 
 `docker`的镜像仓库在国外，下载会很慢，所以启用阿里云加速。在`/etc/docker`目录下创建`daemon.json`文件，添加如下内容：
 
@@ -76,11 +76,11 @@ $ sudo systemctl daemon-reload
 $ sudo service docker restart
 ```
 
-### 1.2.3. 赋予当前用户权限
+### 2.3  赋予当前用户权限
 
 **此步可省略**！若省略，则每次执行`docker`命令，均需明确管理员权限，即在命令前加`sudo`。
 
-#### 1.2.3.1. 确认 docker 组已建立
+#### 2.3.1  组已建立
 
 若要设置权限，以简便`docker`相关操作，首先需执行以下命令确认`docker`组已建立：
 
@@ -91,7 +91,7 @@ groupadd：“docker”组已存在
 
 如果不返回类似以上的结果，则`docker`可能需要重新安装。
 
-#### 1.2.3.2. 向 docker 组添加当前用户
+#### 2.3.2  组添加当前用户
 
 以下两条命令均可向`docker`组添加用户：
 
@@ -103,7 +103,7 @@ $ sudo gpasswd -a jason docker
 
 若用户名不同请自行替换。
 
-#### 1.2.3.3. 重启 docker 服务
+#### 2.3.3  服务
 
 使用以下两条命令之一，可重启`docker`服务：
 
@@ -113,7 +113,7 @@ $ sudo service docker restart
 $ sudo /etc/init.d/docker restart
 ```
 
-#### 1.2.3.4. 确保权限生效
+#### 2.3.4  确保权限生效
 
 切换当前会话到新`group`或者重启`X`会话。这一步是必须的，否则因为`groups`命令获取到的是缓存的组信息，刚添加的组信息未能生效，所以`docker images`等命令执行时同样有错。执行：
 
@@ -137,9 +137,9 @@ $ sudo chmod a+rw /var/run/docker.sock
 
 至此，不再需要前缀`sudo`。以后所有实验均假设`docker`执行权限已正确设置，无需加前缀`sudo`。
 
-## 1.3. 操作镜像
+## 三、  操作镜像
 
-### 1.3.1. 下载镜像
+### 3.1  下载镜像
 
 **注意**，如果已有经过备份的镜像，可以直接恢复，而不用下载。
 
@@ -187,7 +187,7 @@ OpenJDK 64-Bit Server VM (build 25.111-b14, mixed mode)
 
 通过`docker inspect`命令可以查看镜像的详细信息，会以`json`格式显示。
 
-### 1.3.2. 备份镜像
+### 3.2  备份镜像
 
 在`实验目录`中建立目录`images`并进入，然后执行命令：
 
@@ -205,7 +205,7 @@ drwxr-xr-x 3 jason jason      4096 2月  13 21:08 ../
 
 使用`sudo tar -xf <filename>`命令可以解压这些包。
 
-### 1.3.3. 恢复镜像
+### 3.3  恢复镜像
 
 备份后的镜像`tar`包可以通过如下命令恢复，以`java:8`镜像为例：
 
@@ -216,11 +216,11 @@ $ docker load -i open-java-8.111.tar
 
 备注：删除镜像的命令是`sudo docker rmi -f <镜像名称或ID>`。加上`-f`表示连使用该镜像的容器一并删除。
 
-## 1.4. 制作 JDK 镜像
+## 四、  镜像
 
-### 1.4.1. 下载 JDK 并解压
+### 4.1  并解压
 
-以`centos`镜像为基础，制作`oracle jdk 8u241`的镜像。在`实验目录`中建立目录`build-jdk`并进入。
+以`centos`镜像为基础，制作`oracle jdk 8u241`的镜像。在`实验目录`中建立目录`centos-jdk8`并进入。
 
 从[Oralce](https://www.java.com/en/download/manual.jsp)下载`JDK`到当前目录并解压：
 
@@ -231,7 +231,7 @@ $ tar -zxvf jdk-8u241-linux-x64.tar.gzip
 
 解压后，在当前目录会建立目录`jdk1.8.0_241`。构建镜像要求所需的所有文件都在当前目录下。
 
-### 1.4.2. Dockerfile
+### 4.2  Dockerfile
 
 在当前目录中编写`Dockerfile`，使用默认名称`Dockerfile`即可。如果使用默认文件名，则构建镜像时不必指明`Dockerfile`，否则在运行`docker build`命令时需加上`-f`参数进行指定。`Dockerfile`内容为：
 
@@ -275,7 +275,7 @@ WORKDIR /opt
 
 **注意**编码类型设置为`C.UTF-8`，否则不支持中文。是否设置`LC_ALL`对输出中文无影响。
 
-### 1.4.3. 构建及检查
+### 4.3  构建及检查
 
 在当前目录中运行：
 
@@ -291,15 +291,15 @@ $ docker build -f <Dockerfile文件名> -t centos-jdk8 .
 完成后执行：
 
 ```bash
-$docker images
+$ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
 centos-jdk8         latest              f73cb005904c        About a minute ago   679MB
 centos              latest              470671670cac        4 weeks ago          237MB
 java                8                   d23bdf5b1b1b        3 years ago          643MB
 
-$docker run centos-jdk8 java -version
+$ docker run centos-jdk8 java -version
 # 或以下命令进入镜像命令行后执行`java -version`，再执行`exit`退出
-$docker run -it centos-jdk8
+$ docker run -it centos-jdk8
 java version "1.8.0_241"
 Java(TM) SE Runtime Environment (build 1.8.0_241-b07)
 Java HotSpot(TM) 64-Bit Server VM (build 25.241-b07, mixed mode)
@@ -309,7 +309,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.241-b07, mixed mode)
 
 第二个命令返回正确的`JDK`版本信息，说明所建镜像中`oracle jdk 8`安装有效。
 
-### 1.4.4. 直接以压缩包构建
+### 4.4  直接以压缩包构建
 
 如果对`Dockerfile`进行以下修改，将：
 
@@ -325,9 +325,9 @@ COPY jdk1.8.0_241 /usr/java/jdk1.8.0_241
 ADD jdk-8u241-linux-x64.tar.gzip /usr/java
 ```
 
-两者效果一样，说明`ADD`命令可以解压压缩包，比`COPY`命令省去手动解压缩过程。
+两者效果一样，说明`ADD`命令可以解压压缩包，比`COPY`命令省去手动解压缩过程。**直接使用压缩包通过`ADD`构建更便捷，建议使用**。
 
-### 1.4.5. 网络信息
+### 4.5  网络信息
 
 以上所有操作在`VMware`中执行。以下为产生的 IP 地址：
 
@@ -338,13 +338,13 @@ ADD jdk-8u241-linux-x64.tar.gzip /usr/java
 | 虚拟机上`docker0`地址         | 172.17.0.1      |
 | 容器`centos-jdk8`运行时的地址 | 172.17.0.2      |
 
-## 1.5. 制作及运行应用镜像
+## 五、  制作及运行应用镜像
 
-### 1.5.1. 内容
+### 5.1  内容
 
 所有应用均以`centos-jdk8`为基础镜像。实验三种应用程序的镜像构建及运行。
 
-#### 1.5.1.1. 最简单的单体程序 yxy-simple
+#### 5.1.1  yxy-simple
 
 `yxy-simple`没有任何外部依赖，不读取配置文件，也不将输出写入任何文件，属于最简单的示例性应用。如果该应用无法成功构建镜像，更复杂应用的镜像构建也就无从谈起了。
 
@@ -393,15 +393,15 @@ public class Simple {
 3. 如何命名容器。
 4. 如何连接并进入正在运行的容器。
 
-#### 1.5.1.2. 有依赖及文件输入输出的程序 yxy-log
+#### 5.1.2  yxy-log
 
 `yxy-log`以`yxy-simple`为基础，在其上增加了日志输出，并列出可选的第三个参数所指定目录的内容。日志框架使用`log4j2`。因此，`yxy-log`包含如下文件：
 
 | 文件名称              | 用途                                           |
 | --------------------- | ---------------------------------------------- |
-| simpleLog-1.0.jar     | 主程序包                                       |
-| log4j-api-2.13.0.jar  | 日志库 API 接口文件                            |
-| log4j-core-2.13.0.jar | 日志库核心功能实现文件                         |
+| simpleLog-1.0.jar     | 主程序包 |
+| log4j-api-2.13.0.jar  | 日志库 API 接口文件 |
+| log4j-core-2.13.0.jar | 日志库核心功能实现文件 |
 | log4j2.xml            | 日志配置文件，配置输出至当前目录下的`logs`目录 |
 
 通过对`yxy-log`的实验，可以了解以下方面：
@@ -467,7 +467,7 @@ public class SimpleLog {
 }
 ```
 
-#### 1.5.1.3. 网络服务程序 yxy-web
+#### 5.1.3  yxy-web
 
 通过对`yxy-web`的实验，可以了解以下方面：
 
@@ -475,13 +475,31 @@ public class SimpleLog {
 2. 如何在构建时指定更多的参数。
 3. 如何在运行时指定容器内存等参数。
 
-~~待续~~。
+源码为最基本的`spring web`：
 
-### 1.5.2. yxy-simple
+```java
+@RestController
+@SpringBootApplication
+public class SimpleWebApplication {
+    private static AtomicInteger count = new AtomicInteger(0);
 
-#### 1.5.2.1. 构建镜像
+    @RequestMapping("/")
+    @ResponseBody
+    String home() {
+        return count.getAndIncrement() + ": Hello World!";
+    }
 
-在`实验目录`中建立目录`build-yxy-simple`并进入。复制应用程序`simple-1.0.jar`到当前目录，然后建立名为`yxy-simple.dockerfile`的`Dockerfile`：
+    public static void main(String[] args) {
+        SpringApplication.run(SimpleWebApplication.class, args);
+    }
+}
+```
+
+### 5.2  yxy-simple
+
+#### 5.2.1  构建镜像
+
+在`实验目录`中建立目录`yxy-simple`并进入。复制应用程序`simple-1.0.jar`到当前目录，然后建立名为`yxy-simple.dockerfile`的`Dockerfile`：
 
 ```docker
 # 指定基础镜像。
@@ -496,7 +514,7 @@ ADD simple-1.0.jar /opt/app.jar
 ENTRYPOINT  ["java","-jar","app.jar"]
 ```
 
-执行命令构建镜像：
+此次使用指定文件名的方式执行命令构建镜像：
 
 ```bash
 $ docker build -f yxy-simple.dockerfile -t yxy/simple .
@@ -511,7 +529,7 @@ java                8                   d23bdf5b1b1b        3 years ago         
 
 相比构建`centos-jdk8`，构建新建镜像`yxy/simple`秒回。虽然`SIZE`也将近 700M，但其所耗时间远少于复制类似大小的文件。这是因为镜像构建是分层的，分层的镜像之间是引用关系。如果基础镜像存在，则不会将其全部复制一份。实际也不会占用这么大的空间。只有单独保存新镜像到本地时才会占用这么大的空间。
 
-#### 1.5.2.2. 验证运行容器
+#### 5.2.2  验证运行容器
 
 执行：
 
@@ -549,7 +567,7 @@ SIMPLE is finished.
 
 无法显示中文。是否设置`LC_ALL`对输出中文无影响。
 
-#### 1.5.2.3. 不指定名称运行容器
+#### 5.2.3  不指定名称运行容器
 
 执行：
 
@@ -588,9 +606,9 @@ d4cc9c3cac5d        yxy/simple          "java -jar app.jar 2…"   5 seconds ago
 e46272bf42af        yxy/simple          "java -jar app.jar 2…"   11 minutes ago      Exited (0) 11 minutes ago                       sleepy_golick
 ```
 
-**如果不指定容器名称，`docker`会为每次建立新的容器并为其生成一个毫无规律的名字**。
+如果不指定容器名称，`docker`会为每次建立新的容器并为其生成一个毫无规律的名字。因此，**在实际生产环境中启动容器时，必须指定容器名称**。
 
-#### 1.5.2.4. 指定名称运行容器
+#### 5.2.4  指定名称运行容器
 
 首先指定容器名称并创建运行：
 
@@ -628,7 +646,7 @@ $ docker container logs yxy-simple
 
 **注**，`docker container logs`命令可简写为`docker logs`。加上参数`-f`可持续输出。
 
-#### 1.5.2.5. 连接正在运行的容器
+#### 5.2.5  连接正在运行的容器
 
 加大循环次数，使容器长时间执行，此处循环 200 次，约 200 秒：
 
@@ -659,7 +677,7 @@ $ docker exec -it yxy-simple-long /bin/bash
 
 以上事实说明，**服务程序不能在终端窗口直接运行，否则一旦终端关闭，则包含服务的容器也同时关闭**。
 
-#### 1.5.2.6. 后台运行容器
+#### 5.2.6  后台运行容器
 
 服务程序不能在前台，即终端窗口直接运行，否则一旦终端关闭，则包含服务的容器也同时关闭。包含服务程序的容器应该在后台运行。前台运行应仅应用于调试或执行一次性任务。后台运行加入参数`-d`即可：
 
@@ -681,7 +699,7 @@ $ docker start yxy-simple-long
 
 所以，**服务程序应在逻辑上永不结束，且以后台方式运行**。
 
-#### 1.5.2.7. 停止容器及删除容器和镜像
+#### 5.2.7  停止容器及删除容器和镜像
 
 删除容器命令只能删除已停止的容器。正在运行的容器必须先停止，再删除。**删除容器命令**如下：
 
@@ -715,18 +733,18 @@ $ docker start yxy-simple-long
 $ docker rm $(docker image ls -q)
 ```
 
-### 1.5.3. yxy-log
+### 5.3  yxy-log
 
-#### 1.5.3.1. 构建镜像
+#### 5.3.1  构建镜像
 
-在`实验目录`中建立目录`build-yxy-log`并进入。再建立目录`simpleLog`，然后复制以下文件到该目录中：
+在`实验目录`中建立目录`yxy-log`并进入。再建立目录`simpleLog`，然后复制以下文件到该目录中：
 
 - simpleLog-1.0.jar
 - log4j-api-2.13.0.jar
 - log4j-core-2.13.0.jar
 - log4j2.xml
 
-在`build-yxy-log`中为新建目录建立压缩包：
+在`yxy-log`中为新建目录建立压缩包，注意未包含日志配置文件`log4j2.xml`：
 
 ```bash
 # 建立应用程序压缩包，不包含日志配置文件。
@@ -738,12 +756,12 @@ drwxr-xr-x 2 jason jason    4096 2月  21 09:59 simpleLog/
 
 将为`yxy-log`构建两个不同的镜像：
 
-| 镜像名称    | Dockerfile             | 内容及目的                                          |
-| ----------- | ---------------------- | --------------------------------------------------- |
-| yxy/log-dir | yxy-log-dir.dockerfile | 通过复制文件目录构建，包含日志配置文件              |
+| 镜像名称    | Dockerfile             | 内容及目的                                     |
+| ----------- | ---------------------- | ------------------------------------------- |
+| yxy/log-dir | yxy-log-dir.dockerfile | 通过复制文件目录构建，包含日志配置文件            |
 | yxy/log-tar | yxy-log-tar.dockerfile | 通过压缩文件构建，只包含 jar 包，不包含日志配置文件 |
 
-根据以上文件名为建立`Dockerfile`：
+根据以上文件名为建立`Dockerfile`，为避免重复，在下面示例中加入注释以区别不同内容：
 
 ```docker
 # 指定基础镜像。
@@ -793,7 +811,9 @@ hello-world         latest              fce289e99eb9        13 months ago       
 java                8                   d23bdf5b1b1b        3 years ago         643MB
 ```
 
-#### 1.5.3.2. 验证运行容器
+在`linux`环境下压缩文件，可以用于镜像构建。
+
+#### 5.3.2  验证运行容器
 
 执行：
 
@@ -820,14 +840,14 @@ $ docker run --name yxy-log-tar yxy/log-tar 3 no_output
 
 虽然没有任何输出，但运行时间与运行`yxy-log-dir`相等。没有输出是因为没有日志配置文件，所有输出全部打印到容器内部了。如何设置将在后面说明。
 
-#### 1.5.3.3. 挂载目录运行
+#### 5.3.3  挂载目录运行
 
-在`/home/jason/docker-demo/build-yxy-log`中建立目录`logs`并进入。
+在`/home/jason/docker-demo/yxy-log`中建立目录`logs`并进入。
 
 执行：
 
 ```bash
-$ docker run -v /home/jason/docker-demo/build-yxy-log/logs:/opt/simpleLog/logs yxy-log 2 abc .
+$ docker run -v /home/jason/docker-demo/yxy-log/logs:/opt/simpleLog/logs yxy-log 2 abc .
 11:29:49.356 I com.yxy.docker.SimpleLog [main] - Absolute path of [.] is [/opt/simpleLog/.].
 11:29:49.360 I com.yxy.docker.SimpleLog [main] - Path [.] contains [5] files.
 11:29:49.360 I com.yxy.docker.SimpleLog [main] - ---- [0]: log4j2.xml
@@ -874,39 +894,39 @@ $ cat app.log
 2020-02-21 11:29:51.367 INFO  com.yxy.docker.SimpleLog                           [main                          ] - SIMPLE-LOG is finished.
 ```
 
-容器中的日志被保存在了指定的目录`/home/jason/docker-demo/build-yxy-log/logs`中了，内容正确。
+容器中的日志被保存在了指定的目录`/home/jason/docker-demo/yxy-log/logs`中了，内容正确。
 
 容器上当前目录是`/opt/simpleLog`。运行程序时在其下会建立日志目录`logs`。如果构建镜像时，未明确指定工作目录，则以上返回中，当前目录将是从基础镜像继承而来的`/opt`，而其下将有`/opt/logs`和`/opt/simpleLog`两个目录。此时，由于命令指定的容器目录`/opt/simpleLog/logs`不存在，目录挂载将失败，但**不会报错**！以上试错过程请自行构建镜像尝试。
 
-在宿主机目录与容器目录均正确时，挂载生效。宿主机`/home/jason/docker-demo/build-yxy-log/logs`下将产生文件`app.log`和`error.log`，与日志配置相符。`app.log`内容也正确。控制台输出内容与日志文件格式稍有不同，这是在日志配置文件中定义的。
+在宿主机目录与容器目录均正确时，挂载生效。宿主机`/home/jason/docker-demo/yxy-log/logs`下将产生文件`app.log`和`error.log`，与日志配置相符。`app.log`内容也正确。控制台输出内容与日志文件格式稍有不同，这是在日志配置文件中定义的。
 
 **注**，目录名中有中文可正常运行。
 
-#### 1.5.3.4. 挂载目录指向程序目录
+#### 5.3.4  挂载目录指向程序目录
 
-当挂载目录指向的是容器中程序所在目录时，有两种情况会发生。**第一种**，宿主机挂载目录中没有容器所需的程序，例如挂载目录`/home/jason/docker-demo/build-yxy-log`中没有`simpleLog-1.0.jar`及其依赖的所有包，运行：
+当挂载目录指向的是容器中程序所在目录时，有两种情况会发生。**第一种**，宿主机挂载目录中没有容器所需的程序，例如挂载目录`/home/jason/docker-demo/yxy-log`中没有`simpleLog-1.0.jar`及其依赖的所有包，运行：
 
 ```bash
-$ docker run -v /home/jason/docker-demo/build-yxy-log:/opt/simpleLog yxy/log-dir 2 error .
+$ docker run -v /home/jason/docker-demo/yxy-log:/opt/simpleLog yxy/log-dir 2 message .
 Error: Unable to access jarfile /opt/simpleLog/simpleLog-1.0.jar
 ```
 
 执行失败，返回了错误信息。
 
-因为容器中的`/opt/simpleLog`映射到了宿主机的`/home/jason/docker-demo/build-yxy-log`，而宿主机的目录中没有相应的`jar`包，相当于在没有相应`jar`包的目录中执行了`java -jar simpleLog-1.0.jar`，所以报上述错误。
+因为容器中的`/opt/simpleLog`映射到了宿主机的`/home/jason/docker-demo/yxy-log`，而宿主机的目录中没有相应的`jar`包，相当于在没有相应`jar`包的目录中执行了`java -jar simpleLog-1.0.jar`，所以报上述错误。
 
 **第二种**，如果在挂载目录中有全套的应用程序，执行前述命令相当于用容器内的`jdk`运行了宿主机上的应用程序，在挂载目录中会按日志配置建立`logs`目录及相应的日志文件。
 
-#### 1.5.3.5. 挂载配置文件
+#### 5.3.5  挂载配置文件
 
 挂载操作不仅可以挂载目录，还可以直接挂载文件，从而解决配置文件的问题。
 
-首先删除`/home/jason/docker-demo/build-yxy-log/logs`中的日志文件，以备测试。然后在该目录中执行：
+首先删除`/home/jason/docker-demo/yxy-log/logs`中的日志文件，以备测试。然后在该目录中执行：
 
 ```bash
 $ ls -a
 # 此时目录为空。
-$ docker run -v /home/jason/docker-demo/build-yxy-log/simpleLog/log4j2.xml:/opt/simpleLog/log4j2.xml -v /home/jason/docker-demo/build-yxy-log/logs:/opt/simpleLog/logs yxy/log-tar 2 ok .
+$ docker run -v /home/jason/docker-demo/yxy-log/simpleLog/log4j2.xml:/opt/simpleLog/log4j2.xml -v /home/jason/docker-demo/yxy-log/logs:/opt/simpleLog/logs yxy/log-tar 2 ok .
 12:28:41.565 I com.yxy.docker.SimpleLog [main] - Absolute path of [.] is [/opt/simpleLog/.].
 12:28:41.569 I com.yxy.docker.SimpleLog [main] - Path [.] contains [5] files.
 ...
@@ -928,7 +948,7 @@ $ cat app.log
 
 **注意**，即使在`yxy/log-dir`中已包含日志配置文件，也以使用以上方法强制使用外部的配置文件。
 
-打开`/home/jason/docker-demo/build-yxy-log/simpleLog/log4j2.xml`，将配置内容中指定的输出目录从`logs`改为`logsNew`：
+打开`/home/jason/docker-demo/yxy-log/simpleLog/log4j2.xml`，将配置内容中指定的输出目录从`logs`改为`logsNew`：
 
 ```xml
 <!-- 对以下值进行修改 -->
@@ -937,10 +957,14 @@ $ cat app.log
 <property name="LOG_HOME">logsNew</property>
 ```
 
-此时执行
+对日志配置文件的修改，是为了将日志输出从`logs`转到`logsNew`。此时执行：
 
 ```bash
-$ docker run -v /home/jason/docker-demo/build-yxy-log/simpleLog/log4j2.xml:/opt/simpleLog/log4j2.xml -v /home/jason/docker-demo/build-yxy-log/logs:/opt/simpleLog/logsNew yxy/log-dir 2 new_log_path
+$ cd /home/jason/docker-demo/yxy-log
+$ mkdir logsNew
+$ cd logsNew
+
+$ docker run -v /home/jason/docker-demo/yxy-log/simpleLog/log4j2.xml:/opt/simpleLog/log4j2.xml -v /home/jason/docker-demo/yxy-log/logs:/opt/simpleLog/logsNew yxy/log-dir 2 new_log_path
 12:44:06.268 I com.yxy.docker.SimpleLog [main] - Loop[0]: new_log_path
 12:44:07.272 I com.yxy.docker.SimpleLog [main] - Loop[1]: new_log_path
 12:44:08.275 I com.yxy.docker.SimpleLog [main] - SIMPLE-LOG is finished.
@@ -951,22 +975,114 @@ $ cat app.log
 2020-02-21 12:45:07.699 INFO  com.yxy.docker.SimpleLog                           [main                          ] - SIMPLE-LOG is finished.
 ```
 
+以上结果说明修改后的日志配置生效，容器中的日志按映射关系输出到了新目录中。
+
 如果应用程序在其当前路径下有多个配置文件，目前只有两种方法：
 
 1. 在`docker run`命令中使用`-v`参数逐一挂载配置文件。此方法比较麻烦。
 2. 修改程序，将所有配置文件移至单独的目录，然后挂载该配置文件目录。此方法配置`docker`命令简单，但需对程序做调整。
 
-### 1.5.4. yxy-web
+### 5.4  yxy-web
 
-~~待续~~
+#### 5.4.1  构建镜像
 
-## 1.6. 在 Intellij Idea 使用 docker
+在`实验目录`中建立目录`yxy-web`并进入，复制`simple-web-1.0.jar`，然后建立`Dockerfile`：
 
-~~待续~~
+```dockerfile
+# 指定基础镜像
+FROM centos-jdk8
 
-## 1.7. 参考资料
+MAINTAINER FuHongJie jasson.freeemail@126.com
 
-### 1.7.1. 参考文章
+# 复制应用文件。现在复制的只是一个文件。可以在复制过程中改名。用COPY亦可。
+ADD simple-web-1.0.jar /opt/app.jar
+
+#声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务
+EXPOSE 8082
+
+# 设置镜像入口。一旦设置，使用docker run -it将不会进入container
+# 最简单的设置如下：
+# ENTRYPOINT  ["java","-jar","app.jar"] 
+# 以下设置执行：java -Xms128m -Xmx512m -jar app.jar
+ENTRYPOINT ["java","-Xms128m","-Xmx512m"]
+CMD ["-jar","app.jar"]
+```
+
+**注意**，此处通过`ENTRYPOINT`和`CMD`的组合，添加了`JVM`运行参数。
+
+执行：
+
+```bash
+$ docker build -t yxy/web .
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+yxy/web             latest              b4925bca7589        14 seconds ago      697MB
+yxy/log-tar         latest              da651164ecd4        6 days ago          681MB
+yxy/log-dir         latest              3087eca2d75d        6 days ago          681MB
+yxy/simple          latest              c5d6e6d8f7fa        7 days ago          679MB
+centos-jdk8         latest              f73cb005904c        7 days ago          679MB
+centos              latest              470671670cac        5 weeks ago         237MB
+hello-world         latest              fce289e99eb9        14 months ago       1.84kB
+java                8                   d23bdf5b1b1b        3 years ago         643MB
+```
+
+镜像构建成功。
+
+#### 5.4.2  验证运行容器
+
+执行：
+
+```bash
+# 未映射端口，容器内部默认使用8082端口。
+$ docker run --name yxy-web yxy/web
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.4.RELEASE)
+...
+...
+```
+
+容器启动成功，此时使用浏览器访问宿主机`localhost:8082`失败。但访问运行中的容器地址`172.17.0.2:8082`成功获取如下页面返回：
+
+```text
+0: Hello World!
+```
+
+每次刷新，前面的序号增加1。
+
+**注意**，容器运行时的IP地址可能不同，应根据实际情况修改。
+
+#### 5.4.3  映射端口
+
+将容器端口映射到宿主机执行，需要以下命令：
+
+```bash
+# 映射端口并后台执行。
+$ docker run --name yxy-web-map -d -p:80:8082 yxy/web
+```
+
+`-p80:8082`将容器`8082`端口映射到了宿主机的`80`端口。如果仅用于测试，`-d`后台运行参数可选。
+
+此时，在宿主机上使用浏览器访问`localhost`成功。在物理机上访问宿主机`192.168.163.138`也得到正确返回。这说明端口映射成功。
+
+**注意**，作为宿主机运行的`VMware`虚拟机IP地址可能不同，应根据实际情况修改。
+
+此次执行指定了新的名字启动容器。容器生成后再次启动，将保留最初的启动设置。执行以下操作可验证：
+
+```bash
+$ docker stop yxy-web-map
+# 停止容器后，浏览器访问失败。
+$ docker start yxy-web-map
+# 再次启动后访问正常。
+```
+
+## 六、  参考资料
+
+### 6.1  参考文章
 
 1. [Ubuntu18.04 安装 Docker](https://blog.csdn.net/u010889616/article/details/80170767)
 1. [Ubuntu18.04 下 Docker CE 安装](https://www.jianshu.com/p/07e405c01880)
@@ -981,7 +1097,7 @@ $ cat app.log
 1. [IntelliJ IDEA 快速实现 Docker 镜像部署](https://my.oschina.net/wuweixiang/blog/2874064)：图文并茂，很详细，尚未实验。
 1. [优雅的终止 docker 容器](https://xiaozhou.net/stop-docker-container-gracefully-2016-09-08.html)：对如何结束容器的说明很细，有`go`语言获取`SIGTERM`信号的示例。
 
-### 1.7.2. 教程
+### 6.2  教程
 
 1. [RIP Tutorial](https://riptutorial.com/zh-CN/docker/)：稍显老旧的教程，机器翻译得不太好，内容尚可。
 2. [Docker 入门教程](http://www.docker.org.cn/book/docker)：极为精简的教程，可在 15 分钟内看完、练完，初步感觉`docker`是咋回事。

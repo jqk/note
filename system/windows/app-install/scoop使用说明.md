@@ -1,46 +1,55 @@
 # scoop使用说明
 
-* 一、位置
-* 二、安装scoop
-  * 2.1设置运行权限
-  * 2.2安装位置及目录结构
-  * 2.3安装scoop
-* 三、初始化scoop
-  * 3.1安装git
-  * 3.2增加bucket
-  * 3.3安装多线程下载
-* 四、安装应用程序
-  * 4.1正常安装
-  * 4.2安装失败及重试
-  * 4.3处理下载缓存
-    * 4.3.1保存已下载文件供后续使用
-    * 4.3.2使用软链接共享已下载文件
-* 五、升级应用程序
-* 六、已安装程序列表
-* 七、安装脚本
-  * 7.1安装scoop
-  * 7.2初始化
-  * 7.3安装应用软件
-    * 7.3.1安装必备软件
-    * 7.3.2安装全部软件
-  * 7.4右键菜单
-  * 7.5应用程序设置
-* 八、参考资料
+- scoop使用说明
+  - 一、  位置
+  - 二、  安装scoop
+    - 2.1  设置运行权限
+    - 2.2  安装位置及目录结构
+    - 2.3  安装scoop
+      - 2.3.1  命令行安装
+      - 2.3.2  自行从`github`上下载
+      - 2.3.3  从已安装系统复制
+  - 三、  初始化scoop
+    - 3.1  安装git
+    - 3.2  增加bucket
+    - 3.3  安装多线程下载
+  - 四、  安装应用程序
+    - 4.1  正常安装
+    - 4.2  安装失败及重试
+    - 4.3  处理下载缓存
+    - 4.4  保存已下载文件供后续使用
+    - 4.5  使用软链接共享已下载文件
+  - 五、  升级应用程序
+  - 六、  已安装程序列表
+  - 七、  安装脚本
+    - 7.1  安装scoop
+      - 7.1.1  官方安装
+      - 7.1.2  非官方安装
+      - 7.1.3  准备共享空间
+      - 7.1.4  链接共享空间
+    - 7.2  初始化
+    - 7.3  安装应用软件
+      - 7.3.1  安装必备软件
+      - 7.3.2  安装全部软件
+    - 7.4  右键菜单
+    - 7.5  应用程序设置
+    - 7.6  最简安装总结
+  - 八、  参考资料
 
 -----
 
-## 一、位置
+## 一、  位置
 
 * [scoop官网](https://scoop.sh/)
 * [scoop github](https://github.com/lukesampson/scoop)
 
-## 二、安装scoop
+## 二、  安装scoop
 
 从本节开始说明安装scoop及应用软件的过程，在最后有安装脚本总结。该脚本经过优化，其原理基于从本节开始的说明。
 
 官方要求在`PowerShell`中运行以下各类命令，除设置运行权限相关语句外，无需管理员权限。如未做特殊说明，则所有命令运行于`PowerShell`，无管理员权限。
 
-### 2.1设置运行权限
+### 2.1  设置运行权限
 
 需以管理员身份在`PowerShell`运行以下命令：
 
@@ -57,7 +66,7 @@ set-executionpolicy remotesigned -scope currentuser
 [Y] 是(Y)  [A] 全是(A)  [N] 否(N)  [L] 全否(L)  [S] 暂停(S)  [?] 帮助 (默认值为“N”): a
 ```
 
-### 2.2安装位置及目录结构
+### 2.2  安装位置及目录结构
 
 `scoop`默认安装在`Users\<user>\scoop\apps\scoop\current`中，`<user>`为用户名，本文示例中为`Jason`。也可以指定安装目录，本文此后均以安装到`C:\Scoop`为示例。指定安装目录时运行：
 
@@ -131,11 +140,11 @@ C:\SCOOP
 
 无论以何种方式安装，均会在`用户环境变量`的`PATH`中增加`C:\Scoop\shims`，并增加`GIT_INSTALL_ROOT=C:\Scoop\apps\git\current`。
 
-### 2.3安装scoop
+### 2.3  安装scoop
 
 如果网络环境中没有已安装`scoop`的主机，则建议通过命令行安装，否则从已安装主机复制`scoop`系统。
 
-#### 2.3.1命令行安装
+#### 2.3.1  命令行安装
 
 运行：
 
@@ -154,7 +163,7 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 
 通过以上手段反复折腾后最终是可以安装成功的。
 
-#### 2.3.2自行从`github`上下载
+#### 2.3.2  自行从`github`上下载
 
 该方案操作相当麻烦，基本上是把命令行安装的事做一遍：
 
@@ -164,7 +173,7 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 
 不推荐此方案。
 
-#### 2.3.3从已安装系统复制
+#### 2.3.3  从已安装系统复制
 
 如果指定了应用程序安装目录，则执行如下操作，设已安装`scoop`的主机为A，将要安装`scoop`的主机为B：
 
@@ -178,11 +187,11 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 
 如果未指定应用程序安装目录，无需执行最后两步。
 
-## 三、初始化scoop
+## 三、  初始化scoop
 
 通过`scoop -help`可以获得命令行参数说明。
 
-### 3.1安装git
+### 3.1  安装git
 
 `scoop`的许多内部操作，包含获取`bucket`等，均`git`支持，所以需首先安装。
 
@@ -222,7 +231,7 @@ Running post-install script...
 
 如果使用共享的下载文件，则前面结果中的下载过程将直接跳过。
 
-### 3.2增加bucket
+### 3.2  增加bucket
 
 ```ps
 scoop bucket add extras
@@ -233,7 +242,7 @@ scoop bucket add dorado https://github.com/h404bi/dorado
 scoop bucket add bear https://github.com/AStupidBear/scoop-bear
 ```
 
-### 3.3安装多线程下载
+### 3.3  安装多线程下载
 
 安装多线程下载，在github上有说明：
 
@@ -248,9 +257,9 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 有时多线程下载并不好用，可以通过开关来回切换尝试下载。
 
-## 四、安装应用程序
+## 四、  安装应用程序
 
-### 4.1正常安装
+### 4.1  正常安装
 
 执行`scoop install <app>`命令即可安装软件，其中`<app>`是待安装软件的名称。如果不确定软件名称，可以使用`scoop search <app>`命令进行查找，该命令会返回哪个`bucket`包含所查找的软件。
 
@@ -280,7 +289,7 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 应用程序安装过后，都是默认语言，也没有任何插件。这些需要启动后设置，并手动安装。
 
-### 4.2安装失败及重试
+### 4.2  安装失败及重试
 
 安装失败原因可能很多，但最常见的是下载失败，或下载未完整。此时，应先执行`scoop uninstall <app>`命令，然后删除`cache`目录下刚刚下载的文件，最后再次运行`scoop install <app>`执行安装。
 
@@ -293,9 +302,9 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 想办法上网，通过浏览器下载安装程序；将安装程序复制到`cache`并改名；重新安装即可。
 
-### 4.3处理下载缓存
+### 4.3  处理下载缓存
 
-### 4.3.1保存已下载文件供后续使用
+### 4.4  保存已下载文件供后续使用
 
 安装过程中下载的文件被放置在`cache`目录中，安装之后删除这些文件不会对系统产生任何影响。但如果不删除这些文件，在执行`scoop uninstall <app>`卸载应用后再执行`scoop install <app>`将省略下载文件的过程。
 
@@ -305,7 +314,7 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 注意这两个`bucket`指向的安装文件是相同的，但它们下载结果文件命令不同。`ash258`的文件以`cosi.7z`结尾，而`extra`的文件以`dl.7z`结尾，文件名的其它部分相同，下载的也是相同的文件。
 
-### 4.3.2使用软链接共享已下载文件
+### 4.5  使用软链接共享已下载文件
 
 已下载文件包含应用程序的安装包以及程序源`bucket`信息。
 
@@ -339,7 +348,7 @@ C:\Scoop 的目录
 
 **注意**：理论上对`apps`目录也可做相同的处理，因为其配置保存位置与安装目录。虽未进行过测试，但原理上，大多数`portable`程序均应能正常执行。不过在系统启动时自启动的程序，或非`portable`程序可能会出问题。所以建议应用程序仍安装在本机，不进行共享。
 
-## 五、升级应用程序
+## 五、  升级应用程序
 
 通过`scoop status`可以查看所有程序的版本状态。通过`scoop update *`升级所有程序至最新版本，或`scoop update <app>`升级指定的程序。
 
@@ -369,7 +378,7 @@ C:\Users\Jason\scoop
 
 因此，升级后，旧版程序可以删除。相应的，在`cache`中的旧版安装包也可删除。执行删除的前提是保证新版运行无异常，否则若需回退，则要重新下载前一版本。
 
-## 六、已安装程序列表
+## 六、  已安装程序列表
 
 尽量安装一些相对不太大的应用软件的绿色版。
 
@@ -437,11 +446,11 @@ C:\Users\Jason\scoop
 
 由于当前系统要求使用`oracle JDK 8`，而使用`scoop`安装只能安装`oracle JDK 13`，其它`版本8的JDK`均非`oracle`出品，所以`Java虚拟机`需手动安装。
 
-## 七、安装脚本
+## 七、  安装脚本
 
-### 7.1安装scoop
+### 7.1  安装scoop
 
-#### 7.1.1官方安装
+#### 7.1.1  官方安装
 
 安装`scoop`及应用软件无需管理员权限，直接在`PowerShell`运行：
 
@@ -454,17 +463,17 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 
 前面两条命令指定了`scoop`的安装目录，而不是默认的`Users\<user>\scoop`。如果不需要单独建立目录，可以选择不运行。
 
-#### 7.1.2非官方安装
+#### 7.1.2  非官方安装
 
 直接将已安装好的`scoop`复制过来，或从`githut`下载。然后设置路径即可。
 
-#### 7.1.3准备共享空间
+#### 7.1.3  准备共享空间
 
 **不采用共享方式安装可略过此步。**
 
 在地址为`192.168.163.1`(本人笔记本`VMware`主地址)的主机上建立虚拟机共享目录`vm_share`，并在该目录下建立专用于共享下载文件的目录`scoop\cache`，将已安装好的`buckets`复制过来，成为`scoop\buckets`。确保这两个目录可读写。
 
-#### 7.1.4链接共享空间
+#### 7.1.4  链接共享空间
 
 **不采用共享方式安装可略过此步。**
 
@@ -483,7 +492,7 @@ mklink /d buckets \\ssd_win10\vm_share\scoop\buckets
 
 以上过程首先进入`scoop`目录，然后删除`cache`，最后建立软件链接。接着对`buckets`做相同处理。
 
-### 7.2初始化
+### 7.2  初始化
 
 ```ps
 # the first should be zip tool
@@ -504,9 +513,9 @@ scoop bucket add dorado https://github.com/h404bi/dorado
 scoop bucket add bear https://github.com/AStupidBear/scoop-bear
 ```
 
-### 7.3安装应用软件
+### 7.3  安装应用软件
 
-#### 7.3.1安装必备软件
+#### 7.3.1  安装必备软件
 
 ```ps
 # below are alphabet sequence
@@ -521,7 +530,7 @@ scoop install shadowsocks
 scoop install shadowsocksr-csharp
 ```
 
-#### 7.3.2安装全部软件
+#### 7.3.2  安装全部软件
 
 在安装应用软件前，应先安装`Java虚拟机`，否则，应在以下脚本中安装，但版本不是`Java8`。
 
@@ -564,6 +573,7 @@ scoop install keepass
 scoop install listary               # free & pro
 scoop install manictime             # free & pro
 scoop install maven
+scoop install nodejs
 scoop install notepadplusplus
 scoop install opera
 scoop install paint.net
@@ -577,24 +587,27 @@ scoop install recuva
 scoop install shadowsocks
 scoop install shadowsocksr-csharp
 scoop install sharex
+scoop install simplefirefoxbackup
 scoop install smartgit              # free & pro, include openjdk
 scoop install snipaste
 scoop install sourcetree
 scoop install switchhosts
 scoop install teamviewer            # free & pro
-scoop install teracopy-np
+# scoop install teracopy-np
 scoop install telegram
 scoop install thunderbird-portable
 scoop install TranslucentTB
 scoop install typora
+scoop install vim
 scoop install vscode
 scoop install wget
+scoop install wireshark
 scoop install xmind8                # free & pro, include oracle jre 8
 ```
 
 以上程序安装后`apps`共约`5.1GB`，`cache`共约`2.5GB`。
 
-### 7.4右键菜单
+### 7.4  右键菜单
 
 通过`scoop`安装`notepad++`不会自动在右键菜单中添加使用`Edit with Notepad++`条目，应建立一个文本文件，以`.reg`作为扩展名，包含以下内容：
 
@@ -619,11 +632,11 @@ Add Visual Studio Code as a context menu option by running: "C:\Scoop\apps\vscod
 
 通过文件管理器双击该文件，将会更新注册表，再启动文件管理器，在右键菜单中会增加`open with code`条目。
 
-### 7.5应用程序设置
+### 7.5  应用程序设置
 
 vscode插件：`中文显示`，`Python`，`Go`，`GitLens`，`Julia`，`PowerShell`，`YAML`，`Rainbow Brackets`，`CodeRunner`，`Visual Studio IntelliCode`。
 
-### 7.6最简安装总结
+### 7.6  最简安装总结
 
 最简安装只安装最基本的`scoop`组成及系统所需的应用程序。同时，最简安装假设`scoop`已经在其它主机安装过，并在`\\ssd-win10\vm_share\scoop`下建立好了共享。
 
@@ -634,6 +647,6 @@ vscode插件：`中文显示`，`Python`，`Go`，`GitLens`，`Julia`，`PowerSh
 3. 在打开的`PowerShell`中直接运行[scoop3-install-apps](scoop/scoop3-install-apps.ps1)。
 4. 在打开的`命令行`中直接运行[scoop4-notepad++.reg](scoop/scoop4-notepad++.reg)。该操作调起注册表编辑器并询问是否导入注册表信息，选择`是`。
 
-## 八、参考资料
+## 八、  参考资料
 
 《[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)》有对于自建`bucket`的简单说明。
