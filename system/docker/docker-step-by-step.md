@@ -1,8 +1,8 @@
 # docker 下构建 jdk 环境及应用详细说明
 
-## 一、 目标说明及环境准备
+## 一、  目标说明及环境准备
 
-### 1.1 目标说明
+### 1.1  目标说明
 
 通过完成以下实验操作，对`docker`镜像构建、容器运行有相对深入的了解，能够初步地使用`docker`及`java`程序部署。
 
@@ -10,7 +10,7 @@
 
 `docker`的基本概念，如`镜像`、`容器`、`仓库`以及各类命令具体参数的意义请自行百度。
 
-### 1.2 操作系统
+### 1.2  操作系统
 
 操作系统选择`Ubuntu 19.10`。选择`Ubuntu`是因为其界面在`linux`中比较友善，如果命令不熟，可使用图形界面工具。选择`19.10`版是因为在以前的版本中，字体调整大小很困难，在高分屏下，字调到最大也很小，眼睛都要看瞎了；而`19.10`可直接设置`200%`的显示比例，在高分屏下很正常。
 
@@ -18,15 +18,15 @@
 
 操作系统安装在`VMware Workstation 15`中。
 
-### 1.3 工作用户及目录
+### 1.3  工作用户及目录
 
 本文均以用户`jason`执行实验，若实验时用户不同，请自行替换。
 
 建立目录`/home/jason/docker-demo`，所有实验均在此目录下执行，在以后的说明中称为`实验目录`。
 
-## 二、 docker
+## 二、  二、 docker
 
-### 2.1 在线安装
+### 2.1  在线安装
 
 执行：
 
@@ -56,7 +56,111 @@ Synchronizing state of docker.service with SysV service script with /lib/systemd
 Executing: /lib/systemd/systemd-sysv-install enable docker
 ```
 
-### 2.2 更改镜像源
+### 2.2  离线安装
+
+从[docker官网](https://download.docker.com/linux/static/stable/x86_64/)下载所需镜像。离线安装选择的是截止到`2020-02-15`的最新版本：`docker-19.03.6.tgz`，将其下载到`实验目录`下。
+
+建立系统配置文件`docker.service`：
+
+```text
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd
+ExecReload=/bin/kill -s HUP $MAINPID
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+# Uncomment TasksMax if your systemd version supports it.
+# Only systemd 226 and above support this version.
+#TasksMax=infinity
+TimeoutStartSec=0
+# set delegate yes so that systemd does not reset the cgroups of docker containers
+Delegate=yes
+# kill only the docker process, not all processes in the cgroup
+KillMode=process
+# restart the docker process if it exits prematurely
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+建立脚本文件`install-docker.sh'：
+
+```bash
+#!/bin/sh
+echo '解压tar包...'
+tar -xvf $1
+
+echo '将docker目录移到/usr/bin目录下...'
+cp docker/* /usr/bin/
+
+echo '将docker.service 移到/etc/systemd/system/ 目录...'
+cp docker.service /etc/systemd/system/
+
+echo '添加文件权限...'
+chmod +x /etc/systemd/system/docker.service
+
+echo '重新加载配置文件...'
+systemctl daemon-reload
+
+echo '启动docker...'
+systemctl start docker
+
+echo '设置开机自启...'
+systemctl enable docker.service
+
+echo 'docker安装成功...'
+docker -v
+```
+
+建立卸载文件`uninstall-docker.sh`：
+
+```bash
+#!/bin/sh
+
+echo '删除docker.service...'
+rm -f /etc/systemd/system/docker.service
+
+echo '删除docker文件...'
+rm -rf /usr/bin/docker*
+
+echo '重新加载配置文件'
+systemctl daemon-reload
+
+echo '卸载成功...'
+```
+
+安装`docker`：
+
+```bash
+$ sudo ./install-docker.sh docker-19.03.6.tgz
+解压tar包...
+将docker目录移到/usr/bin目录下...
+将docker.service 移到/etc/systemd/system/ 目录...
+添加文件权限...
+重新加载配置文件...
+启动docker...
+设置开机自启...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /etc/systemd/system/docker.service.
+docker安装成功...
+Docker version 19.03.6, build 369ce74a3c
+```
+
+### 2.3  更改镜像源
 
 `docker`的镜像仓库在国外，下载会很慢，所以启用阿里云加速。在`/etc/docker`目录下创建`daemon.json`文件，添加如下内容：
 
@@ -76,11 +180,11 @@ $ sudo systemctl daemon-reload
 $ sudo service docker restart
 ```
 
-### 2.3 赋予当前用户权限
+### 2.4  赋予当前用户权限
 
 **此步可省略**！若省略，则每次执行`docker`命令，均需明确管理员权限，即在命令前加`sudo`。
 
-#### 2.3.1 组已建立
+#### 2.4.1  组已建立
 
 若要设置权限，以简便`docker`相关操作，首先需执行以下命令确认`docker`组已建立：
 
@@ -91,7 +195,7 @@ groupadd：“docker”组已存在
 
 如果不返回类似以上的结果，则`docker`可能需要重新安装。
 
-#### 2.3.2 组添加当前用户
+#### 2.4.2  组添加当前用户
 
 以下两条命令均可向`docker`组添加用户：
 
@@ -103,7 +207,7 @@ $ sudo gpasswd -a jason docker
 
 若用户名不同请自行替换。
 
-#### 2.3.3 服务
+#### 2.4.3  服务
 
 使用以下两条命令之一，可重启`docker`服务：
 
@@ -113,7 +217,7 @@ $ sudo service docker restart
 $ sudo /etc/init.d/docker restart
 ```
 
-#### 2.3.4 确保权限生效
+#### 2.4.4  确保权限生效
 
 切换当前会话到新`group`或者重启`X`会话。这一步是必须的，否则因为`groups`命令获取到的是缓存的组信息，刚添加的组信息未能生效，所以`docker images`等命令执行时同样有错。执行：
 
@@ -135,11 +239,13 @@ Got permission denied while trying to connect to the Docker daemon socket at uni
 $ sudo chmod a+rw /var/run/docker.sock
 ```
 
-至此，不再需要前缀`sudo`。以后所有实验均假设`docker`执行权限已正确设置，无需加前缀`sudo`。
+至此，不重启系统也不再需要前缀`sudo`。以后所有实验均假设`docker`执行权限已正确设置，无需加前缀`sudo`。
 
-## 三、 操作镜像
+**注意**，如果重启系统，是不需要执行`chmod`命令的。具体原因尚待分析。
 
-### 3.1 下载镜像
+## 三、  操作镜像
+
+### 3.1  下载镜像
 
 **注意**，如果已有经过备份的镜像，可以直接恢复，而不用下载。
 
@@ -187,7 +293,7 @@ OpenJDK 64-Bit Server VM (build 25.111-b14, mixed mode)
 
 通过`docker inspect`命令可以查看镜像的详细信息，会以`json`格式显示。
 
-### 3.2 备份镜像
+### 3.2  备份镜像
 
 在`实验目录`中建立目录`images`并进入，然后执行命令：
 
@@ -205,7 +311,7 @@ drwxr-xr-x 3 jason jason      4096 2月  13 21:08 ../
 
 使用`sudo tar -xf <filename>`命令可以解压这些包。
 
-### 3.3 恢复镜像
+### 3.3  恢复镜像
 
 备份后的镜像`tar`包可以通过如下命令恢复，以`java:8`镜像为例：
 
@@ -216,9 +322,9 @@ $ docker load -i open-java-8.111.tar
 
 备注：删除镜像的命令是`sudo docker rmi -f <镜像名称或ID>`。加上`-f`表示连使用该镜像的容器一并删除。
 
-## 四、 镜像
+## 四、  镜像
 
-### 4.1 并解压
+### 4.1  并解压
 
 以`centos`镜像为基础，制作`oracle jdk 8u241`的镜像。在`实验目录`中建立目录`centos-jdk8`并进入。
 
@@ -231,7 +337,7 @@ $ tar -zxvf jdk-8u241-linux-x64.tar.gzip
 
 解压后，在当前目录会建立目录`jdk1.8.0_241`。构建镜像要求所需的所有文件都在当前目录下。
 
-### 4.2 Dockerfile
+### 4.2  Dockerfile
 
 在当前目录中编写`Dockerfile`，使用默认名称`Dockerfile`即可。如果使用默认文件名，则构建镜像时不必指明`Dockerfile`，否则在运行`docker build`命令时需加上`-f`参数进行指定。`Dockerfile`内容为：
 
@@ -275,7 +381,7 @@ WORKDIR /opt
 
 **注意**编码类型设置为`C.UTF-8`，否则不支持中文。是否设置`LC_ALL`对输出中文无影响。
 
-### 4.3 构建及检查
+### 4.3  构建及检查
 
 在当前目录中运行：
 
@@ -309,7 +415,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.241-b07, mixed mode)
 
 第二个命令返回正确的`JDK`版本信息，说明所建镜像中`oracle jdk 8`安装有效。
 
-### 4.4 直接以压缩包构建
+### 4.4  直接以压缩包构建
 
 如果对`Dockerfile`进行以下修改，将：
 
@@ -327,7 +433,7 @@ ADD jdk-8u241-linux-x64.tar.gzip /usr/java
 
 两者效果一样，说明`ADD`命令可以解压压缩包，比`COPY`命令省去手动解压缩过程。**直接使用压缩包通过`ADD`构建更便捷，建议使用**。
 
-### 4.5 网络信息
+### 4.5  网络信息
 
 以上所有操作在`VMware`中执行。以下为产生的 IP 地址：
 
@@ -338,13 +444,13 @@ ADD jdk-8u241-linux-x64.tar.gzip /usr/java
 | 虚拟机上`docker0`地址         | 172.17.0.1      |
 | 容器`centos-jdk8`运行时的地址 | 172.17.0.2      |
 
-## 五、 制作及运行应用镜像
+## 五、  制作及运行应用镜像
 
-### 5.1 内容
+### 5.1  内容
 
 所有应用均以`centos-jdk8`为基础镜像。实验三种应用程序的镜像构建及运行。
 
-#### 5.1.1 yxy-simple
+#### 5.1.1  yxy-simple
 
 `yxy-simple`没有任何外部依赖，不读取配置文件，也不将输出写入任何文件，属于最简单的示例性应用。如果该应用无法成功构建镜像，更复杂应用的镜像构建也就无从谈起了。
 
@@ -393,7 +499,7 @@ public class Simple {
 3. 如何命名容器。
 4. 如何连接并进入正在运行的容器。
 
-#### 5.1.2 yxy-log
+#### 5.1.2  yxy-log
 
 `yxy-log`以`yxy-simple`为基础，在其上增加了日志输出，并列出可选的第三个参数所指定目录的内容。日志框架使用`log4j2`。因此，`yxy-log`包含如下文件：
 
@@ -467,7 +573,7 @@ public class SimpleLog {
 }
 ```
 
-#### 5.1.3 yxy-web
+#### 5.1.3  yxy-web
 
 通过对`yxy-web`的实验，可以了解以下方面：
 
@@ -495,9 +601,9 @@ public class SimpleWebApplication {
 }
 ```
 
-### 5.2 yxy-simple
+### 5.2  yxy-simple
 
-#### 5.2.1 构建镜像
+#### 5.2.1  构建镜像
 
 在`实验目录`中建立目录`yxy-simple`并进入。复制应用程序`simple-1.0.jar`到当前目录，然后建立名为`yxy-simple.dockerfile`的`Dockerfile`：
 
@@ -529,7 +635,7 @@ java                8                   d23bdf5b1b1b        3 years ago         
 
 相比构建`centos-jdk8`，构建新建镜像`yxy/simple`秒回。虽然`SIZE`也将近 700M，但其所耗时间远少于复制类似大小的文件。这是因为镜像构建是分层的，分层的镜像之间是引用关系。如果基础镜像存在，则不会将其全部复制一份。实际也不会占用这么大的空间。只有单独保存新镜像到本地时才会占用这么大的空间。
 
-#### 5.2.2 验证运行容器
+#### 5.2.2  验证运行容器
 
 执行：
 
@@ -567,7 +673,7 @@ SIMPLE is finished.
 
 无法显示中文。是否设置`LC_ALL`对输出中文无影响。
 
-#### 5.2.3 不指定名称运行容器
+#### 5.2.3  不指定名称运行容器
 
 执行：
 
@@ -608,7 +714,7 @@ e46272bf42af        yxy/simple          "java -jar app.jar 2…"   11 minutes ag
 
 如果不指定容器名称，`docker`会为每次建立新的容器并为其生成一个毫无规律的名字。因此，**在实际生产环境中启动容器时，必须指定容器名称**。
 
-#### 5.2.4 指定名称运行容器
+#### 5.2.4  指定名称运行容器
 
 首先指定容器名称并创建运行：
 
@@ -646,7 +752,7 @@ $ docker container logs yxy-simple
 
 **注**，`docker container logs`命令可简写为`docker logs`。加上参数`-f`可持续输出。
 
-#### 5.2.5 连接正在运行的容器
+#### 5.2.5  连接正在运行的容器
 
 加大循环次数，使容器长时间执行，此处循环 200 次，约 200 秒：
 
@@ -677,7 +783,7 @@ $ docker exec -it yxy-simple-long /bin/bash
 
 以上事实说明，**服务程序不能在终端窗口直接运行，否则一旦终端关闭，则包含服务的容器也同时关闭**。
 
-#### 5.2.6 后台运行容器
+#### 5.2.6  后台运行容器
 
 服务程序不能在前台，即终端窗口直接运行，否则一旦终端关闭，则包含服务的容器也同时关闭。包含服务程序的容器应该在后台运行。前台运行应仅应用于调试或执行一次性任务。后台运行加入参数`-d`即可：
 
@@ -699,7 +805,7 @@ $ docker start yxy-simple-long
 
 所以，**服务程序应在逻辑上永不结束，且以后台方式运行**。
 
-#### 5.2.7 停止容器及删除容器和镜像
+#### 5.2.7  停止容器及删除容器和镜像
 
 删除容器命令只能删除已停止的容器。正在运行的容器必须先停止，再删除。**删除容器命令**如下：
 
@@ -733,9 +839,9 @@ $ docker start yxy-simple-long
 $ docker rm $(docker image ls -q)
 ```
 
-### 5.3 yxy-log
+### 5.3  yxy-log
 
-#### 5.3.1 构建镜像
+#### 5.3.1  构建镜像
 
 在`实验目录`中建立目录`yxy-log`并进入。再建立目录`simpleLog`，然后复制以下文件到该目录中：
 
@@ -813,7 +919,7 @@ java                8                   d23bdf5b1b1b        3 years ago         
 
 在`linux`环境下压缩文件，可以用于镜像构建。
 
-#### 5.3.2 验证运行容器
+#### 5.3.2  验证运行容器
 
 执行：
 
@@ -840,7 +946,7 @@ $ docker run --name yxy-log-tar yxy/log-tar 3 no_output
 
 虽然没有任何输出，但运行时间与运行`yxy-log-dir`相等。没有输出是因为没有日志配置文件，所有输出全部打印到容器内部了。如何设置将在后面说明。
 
-#### 5.3.3 挂载目录运行
+#### 5.3.3  挂载目录运行
 
 在`/home/jason/docker-demo/yxy-log`中建立目录`logs`并进入。
 
@@ -902,7 +1008,7 @@ $ cat app.log
 
 **注**，目录名中有中文可正常运行。
 
-#### 5.3.4 挂载目录指向程序目录
+#### 5.3.4  挂载目录指向程序目录
 
 当挂载目录指向的是容器中程序所在目录时，有两种情况会发生。**第一种**，宿主机挂载目录中没有容器所需的程序，例如挂载目录`/home/jason/docker-demo/yxy-log`中没有`simpleLog-1.0.jar`及其依赖的所有包，运行：
 
@@ -917,7 +1023,7 @@ Error: Unable to access jarfile /opt/simpleLog/simpleLog-1.0.jar
 
 **第二种**，如果在挂载目录中有全套的应用程序，执行前述命令相当于用容器内的`jdk`运行了宿主机上的应用程序，在挂载目录中会按日志配置建立`logs`目录及相应的日志文件。
 
-#### 5.3.5 挂载配置文件
+#### 5.3.5  挂载配置文件
 
 挂载操作不仅可以挂载目录，还可以直接挂载文件，从而解决配置文件的问题。
 
@@ -982,9 +1088,9 @@ $ cat app.log
 1. 在`docker run`命令中使用`-v`参数逐一挂载配置文件。此方法比较麻烦。
 2. 修改程序，将所有配置文件移至单独的目录，然后挂载该配置文件目录。此方法配置`docker`命令简单，但需对程序做调整。
 
-### 5.4 yxy-web
+### 5.4  yxy-web
 
-#### 5.4.1 构建镜像
+#### 5.4.1  构建镜像
 
 在`实验目录`中建立目录`yxy-web`并进入，复制`simple-web-1.0.jar`，然后建立`Dockerfile`：
 
@@ -1028,7 +1134,7 @@ java                8                   d23bdf5b1b1b        3 years ago         
 
 镜像构建成功。
 
-#### 5.4.2 验证运行容器
+#### 5.4.2  验证运行容器
 
 执行：
 
@@ -1056,7 +1162,7 @@ $ docker run --name yxy-web yxy/web
 
 **注意**，容器运行时的 IP 地址可能不同，应根据实际情况修改。
 
-#### 5.4.3 映射端口
+#### 5.4.3  映射端口
 
 将容器端口映射到宿主机执行，需要以下命令：
 
@@ -1080,11 +1186,11 @@ $ docker start yxy-web-map
 # 再次启动后访问正常。
 ```
 
-## 六、 参考资料
+## 六、  参考资料
 
 **对以下文章及教程的作者深表感谢**！！！
 
-### 6.1 参考文章
+### 6.1  参考文章
 
 1. [在 Ubuntu 16.04 LTS 上 离线安装 Docker / Docker-compose](https://www.cnblogs.com/atuotuo/p/9272368.html)：镜像目录不是[最新的](https://download.docker.com/linux/static/stable/x86_64/)。
 1. [Linux 下离线安装 Docker](https://www.cnblogs.com/luoSteel/p/10038954.html)：有对 docker 服务配置的修改。
@@ -1103,7 +1209,7 @@ $ docker start yxy-web-map
 1. [IntelliJ IDEA 快速实现 Docker 镜像部署](https://my.oschina.net/wuweixiang/blog/2874064)：应该是一系统文章的一部分。尚未尝试。
 1. [IntelliJ IDEA 安装 docker 插件](https://blog.csdn.net/sealir/article/details/81200662)：未尝试。
 
-### 6.2 教程
+### 6.2  教程
 
 1. [RIP Tutorial](https://riptutorial.com/zh-CN/docker/)：稍显老旧的教程，机器翻译得不太好，内容尚可。
 2. [Docker 入门教程](http://www.docker.org.cn/book/docker)：极为精简的教程，可在 15 分钟内看完、练完，初步感觉`docker`是咋回事。
