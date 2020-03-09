@@ -24,7 +24,7 @@
 
 建立目录`/home/jason/docker-demo`，所有实验均在此目录下执行，在以后的说明中称为`实验目录`。
 
-## 二、  二、 docker
+## 二、  docker
 
 ### 2.1  在线安装
 
@@ -149,6 +149,15 @@ echo '卸载成功...'
 ```bash
 $ sudo ./install-docker.sh docker-19.03.6.tgz
 解压tar包...
+docker/
+docker/containerd
+docker/docker
+docker/ctr
+docker/dockerd
+docker/runc
+docker/docker-proxy
+docker/docker-init
+docker/containerd-shim
 将docker目录移到/usr/bin目录下...
 将docker.service 移到/etc/systemd/system/ 目录...
 添加文件权限...
@@ -162,7 +171,9 @@ Docker version 19.03.6, build 369ce74a3c
 
 ### 2.3  更改镜像源
 
-`docker`的镜像仓库在国外，下载会很慢，所以启用阿里云加速。在`/etc/docker`目录下创建`daemon.json`文件，添加如下内容：
+`docker`的镜像仓库在国外，下载相对较慢，所以启用阿里云加速。在生产环境无法联网，可忽略此步。
+
+在`/etc/docker`目录下创建`daemon.json`文件，添加如下内容：
 
 ```json
 {
@@ -190,7 +201,7 @@ $ sudo service docker restart
 
 ```bash
 $ sudo groupadd docker
-groupadd：“docker”组已存在
+groupadd："docker"组已存在
 ```
 
 如果不返回类似以上的结果，则`docker`可能需要重新安装。

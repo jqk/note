@@ -34,14 +34,20 @@
     - 7.4  右键菜单
     - 7.5  应用程序设置
     - 7.6  最简安装总结
-  - 八、  参考资料
+  - 八、安装步骤
+    - 8.1 权限
+    - 8.2 准备共享
+    - 8.3 设置环境
+    - 8.4 安装应用
+  - 八、 备份与恢复
+  - 九、 参考资料
 
 -----
 
 ## 一、  位置
 
-* [scoop官网](https://scoop.sh/)
-* [scoop github](https://github.com/lukesampson/scoop)
+- [scoop官网](https://scoop.sh/)
+- [scoop github](https://github.com/lukesampson/scoop)
 
 ## 二、  安装scoop
 
@@ -63,7 +69,7 @@ set-executionpolicy remotesigned -scope currentuser
 执行策略更改
 执行策略可帮助你防止执行不信任的脚本。更改执行策略可能会产生安全风险，如 https:/go.microsoft.com/fwlink/?LinkID=135170
 中的 about_Execution_Policies 帮助主题所述。是否要更改执行策略?
-[Y] 是(Y)  [A] 全是(A)  [N] 否(N)  [L] 全否(L)  [S] 暂停(S)  [?] 帮助 (默认值为“N”): a
+[Y] 是(Y)  [A] 全是(A)  [N] 否(N)  [L] 全否(L)  [S] 暂停(S)  [?] 帮助 (默认值为"N"): a
 ```
 
 ### 2.2  安装位置及目录结构
@@ -136,13 +142,13 @@ C:\SCOOP
         scoop.ps1
 ```
 
-安装完成后未建立`C:\ScoopApps`目录。该目录应该在首次下载并安装全局性应用时建立。**至于全局性应用是什么，至今还未搞清楚**。
+安装完成后未建立`C:\ScoopApps`目录。该目录应该在首次下载并安装全局性应用时建立。**至于全局性应用是什么，至今还未搞清楚。应该是使用`scoop install -g <app>`时的目标目录，但未尝试**。
 
 无论以何种方式安装，均会在`用户环境变量`的`PATH`中增加`C:\Scoop\shims`，并增加`GIT_INSTALL_ROOT=C:\Scoop\apps\git\current`。
 
 ### 2.3  安装scoop
 
-如果网络环境中没有已安装`scoop`的主机，则建议通过命令行安装，否则从已安装主机复制`scoop`系统。
+如果网络环境中没有已安装`scoop`的主机，则建议通过命令行安装，否则从已安装主机复制`scoop`系统比较方便。
 
 #### 2.3.1  命令行安装
 
@@ -159,7 +165,7 @@ Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.
 1. 将`https`换为`http`。不可以取消协议前缀，否则是找本地文件。
 1. 在地址字符串前、后加空格，不成功再改回来。
 1. 直接把连接对应的文件`https://raw.githubusercontent.com/lukesampson/scoop/master/bin/install.ps1`下载下来执行。
-1. 使用网络代理，这个最有效。
+1. 先科学上网，再运行以上命令，这个最有效。
 
 通过以上手段反复折腾后最终是可以安装成功的。
 
@@ -253,6 +259,10 @@ scoop install aria2                     # 安装多线程应用。
 scoop config aria2-enabled              # 显示是否使用多线程下载，默认为true。
 scoop config aria2-enabled true         # 启用多线程下载。
 scoop config aria2-enabled false        # 关闭多线程下载。
+
+scoop config aria2-max-connection-per-server 16
+scoop config aria2-split 16
+scoop config aria2-min-split-size 1M
 ```
 
 有时多线程下载并不好用，可以通过开关来回切换尝试下载。
@@ -261,29 +271,29 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 ### 4.1  正常安装
 
-执行`scoop install <app>`命令即可安装软件，其中`<app>`是待安装软件的名称。如果不确定软件名称，可以使用`scoop search <app>`命令进行查找，该命令会返回哪个`bucket`包含所查找的软件。
+执行`scoop install <app>`命令即可安装软件，其中`<app>`是待安装软件的名称。如果不确定软件名称，可以使用`scoop search <app>`命令进行查找，该命令会返回哪个`bucket`包含所查找的软件。当然这些`bucket`需事先添加好。
 
 如果同一个应用程序有多个对应名称，尽量安装名为`<app>-portable`的程序，否则安装`<app>`，最后选择`<app>-np`。
 
-实验证明，以下应用软件下载成功，文件可打开，但安装不成功：
+实验证明，有许多应用软件下载成功，文件可打开，但安装不成功：
 
-* eagleget-portable
-* foxit-reader
-* IntelliJ-IDEA-Ultimate-portable
+- eagleget-portable
+- foxit-reader
+- IntelliJ-IDEA-Ultimate-portable
 
-有一些程序必需换网络或VPN才能下载：
+有一些程序必需科学上网才能下载：
 
-* manictime
-* potplayer
-* proxifier-portable
+- manictime
+- potplayer
+- proxifier-portable
 
 有一些程序下载速度很慢：
 
-* filezilla
-* foobar2000-portable
-* listary
-* opera
-* vscode
+- filezilla
+- foobar2000-portable
+- listary
+- opera
+- vscode
 
 `dark`是安装某个程序所需要，虽然安装时一并安装，但最好提前执行。`vcredist2015`是某个程序建议的，但不安装貌似也可以正常运行。`Cmder`需使用`git`，所以`git`应在安装完`aria2`后立即安装。
 
@@ -308,7 +318,7 @@ scoop config aria2-enabled false        # 关闭多线程下载。
 
 安装过程中下载的文件被放置在`cache`目录中，安装之后删除这些文件不会对系统产生任何影响。但如果不删除这些文件，在执行`scoop uninstall <app>`卸载应用后再执行`scoop install <app>`将省略下载文件的过程。
 
-因此，可以保留这些文件，在需要使用`scoop`在其它机器上安装软件时，将这些文件复制到新主机的`cache`目录下，即可避免下载安装文件。唯一可虑的是，若所需安装的软件版本有更新，则`cache`中的文件是无效的。以`potplayer`为例，已安装的版本在`cache`中对应的文件是`potplayer#191211#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20191211_PotPlayerSetup64.exe_cosi.7z`，而新版是`potplayer#200204#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20200204_PotPlayerSetup64.exe_dl.7z`。此时，`scoop`会下载新文件，而不使用旧文件。当升级成功后，旧文件可以删除。
+因此，可以保留这些文件，在需要使用`scoop`在其它机器上安装软件时，将这些文件复制到新主机的`cache`目录下或远程共享，即可避免下载安装文件。唯一可虑的是，若所需安装的软件版本有更新，则`cache`中的文件是无效的。以`potplayer`为例，已安装的版本在`cache`中对应的文件是`potplayer#191211#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20191211_PotPlayerSetup64.exe_cosi.7z`，而新版是`potplayer#200204#https_t1.daumcdn.net_potplayer_PotPlayer_Version_20200204_PotPlayerSetup64.exe_dl.7z`。此时，`scoop`会下载新文件，而不使用旧文件。当升级成功后，旧文件可以删除。
 
 同一个程序，可能在不同的`bucket`中都有定义，例如`potplayer`在`ash258`和`extra`中都有定义。如果使用`scoop install potplayer`安装，将使用排序靠前的`ash258`。若要使用`extra`，需在命令行中指定，即`scoop install extras/potplayer`。
 
@@ -647,6 +657,137 @@ vscode插件：`中文显示`，`Python`，`Go`，`GitLens`，`Julia`，`PowerSh
 3. 在打开的`PowerShell`中直接运行[scoop3-install-apps](scoop/scoop3-install-apps.ps1)。
 4. 在打开的`命令行`中直接运行[scoop4-notepad++.reg](scoop/scoop4-notepad++.reg)。该操作调起注册表编辑器并询问是否导入注册表信息，选择`是`。
 
-## 八、  参考资料
+## 八、安装步骤
+
+### 8.1 权限
+
+```ps
+# set-executionpolicy remotesigned -scope currentuser
+set-executionpolicy unrestrict -scope currentuser
+```
+
+### 8.2 准备共享
+
+将已安装`scoop`的主机作为程序源进行安装是最方便的。假设已有主机`ssd-win10`在其共享目录`vm_share`下准备了`scoop`共享。该共享是刚刚安装完`scoop`，未安装任何应用时的状态，目录结构如下：
+
+```text
+\\ssd-win101\vm_share\scoop
++---apps
+|   \---scoop
+|       \---current
++---buckets
++---cache
++---persist
+\---shims
+```
+
+在需要安装`scoop`的主机上准备共享数据的环境，以共享路径名为参数执行以下脚本，设脚本名为`scoop1-setup-dir.bat`，内容为：
+
+```bat
+c:
+cd \
+md Scoop
+cd Scoop
+xcopy %1\scoop\apps apps /E
+xcopy %1\scoop\shims shims /E
+mklink /d cache %1\scoop\cache
+mklink /d buckets %1%\scoop\buckets
+dir
+```
+
+在上例中，执行的命令是`scoop1-setup-dir.bat \\ssd-win10\vm_share`。命令成功后应验证软连接目录的有效性。
+
+### 8.3 设置环境
+
+执行名为`scoop2-setup-env.ps1`的脚本，内容为：
+
+```ps
+set-executionpolicy remotesigned -scope currentuser
+$env:SCOOP='C:\Scoop'
+[Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
+$env:SCOOP_GLOBAL='C:\ScoopApps'
+[Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
+[environment]::SetEnvironmentvariable("Path", $env:Path + ";C:\Scoop\shims", "User")
+```
+
+### 8.4 安装应用
+
+打开新的`PowerShell`，使刚刚设置的环境变量生效。执行名为`scoop3-basic-apps.ps1`的脚本安装最基础的应用程序，内容为：
+
+```ps
+scoop install git
+scoop install aria2
+scoop install cmder
+scoop install notepadplusplus
+scoop install peazip
+scoop install shadowsocks
+scoop install shadowsocksr-csharp
+
+scoop bucket add extras
+scoop bucket add nonportable
+scoop bucket add jetbrains
+scoop bucket add ash258 https://github.com/Ash258/scoop-Ash258
+scoop bucket add dorado https://github.com/h404bi/dorado
+scoop bucket add bear https://github.com/AStupidBear/scoop-bear
+
+scoop update
+```
+
+## 八、 备份与恢复
+
+在安装所有软件后，可通过以下命令导出已装软件列表：
+
+```ps
+scoop list
+# 将其保存入文件可用
+scoop list > scoop-list.txt
+```
+
+但其内容如下：
+
+```text
+7zip (v:19.00) [main]
+aria2 (v:1.35.0-1) [main]
+besttrace (v:nightly-20200227) [dorado]
+beyondcompare (v:4.3.4.24657) [extras]
+cacert (v:2020-01-01) [main]
+calibre (v:4.12.0) [extras]
+cmder (v:1.3.14) [main]
+dark (v:3.11.2) [main]
+diskgenius (v:5.2.0.884) [extras]
+...
+```
+
+以上内容只是说明通过`scoop`安装了哪些软件，无法执行批处理安装。可以通过以下命令直接生成安装脚本：
+
+```ps
+scoop list | grep -o -E "^\w+" | sed 's/^\(\w*\).*/scoop install \1/' > scoop-install-apps.ps1
+```
+
+以上命令的过程是先使用`scoop list`列出已装软件信息；然后传递给`grep`，只选第一个单词，即软件名称；再传给`sed`在软件名称前插入`scoop install`，组成安装命令；最后保存为文件。上述命令可简化为：
+
+```ps
+scoop list | sed 's/^\(\w*\).*/scoop install \1/' > scoop-install-apps.ps1
+```
+
+得到的文件内容是：
+
+```text
+scoop install 7zip
+scoop install aria2
+scoop install besttrace
+scoop install beyondcompare
+scoop install cacert
+scoop install calibre
+scoop install cmder
+scoop install dark
+scoop install diskgenius
+scoop install dismplusplus
+...
+```
+
+在安装好`scoop`后可以使用该脚本直接安装所有应用。
+
+## 九、 参考资料
 
 《[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)》有对于自建`bucket`的简单说明。
