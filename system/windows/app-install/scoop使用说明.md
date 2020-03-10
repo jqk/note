@@ -676,29 +676,26 @@ scoop list > scoop-list.txt
 但其内容如下：
 
 ```text
-7zip (v:19.00) [main]
-aria2 (v:1.35.0-1) [main]
-besttrace (v:nightly-20200227) [dorado]
-beyondcompare (v:4.3.4.24657) [extras]
-cacert (v:2020-01-01) [main]
-calibre (v:4.12.0) [extras]
-cmder (v:1.3.14) [main]
-dark (v:3.11.2) [main]
-diskgenius (v:5.2.0.884) [extras]
+Installed apps:
+  7zip (v:19.00) [main]
+  aria2 (v:1.35.0-1) [main]
+  besttrace (v:nightly-20200227) [dorado]
+  beyondcompare (v:4.3.4.24657) [extras]
+  cacert (v:2020-01-01) [main]
+  calibre (v:4.12.0) [extras]
+  cmder (v:1.3.14) [main]
+  dark (v:3.11.2) [main]
+  diskgenius (v:5.2.0.884) [extras]
 ...
 ```
 
 以上内容只是说明通过`scoop`安装了哪些软件，无法执行批处理安装。可以在`Cmder`中通过以下命令直接生成安装脚本：
 
 ```ps
-scoop list | grep -o -E "^\w+" | sed 's/^\(\w*\).*/scoop install \1/' > scoop-install-apps.ps1
+scoop list | grep -o -E "^[ ]+\w+(\-\w+)*" | sed 's/^\s*\(.*\)/scoop install \1/' > scoop-install-apps.ps1
 ```
 
-以上命令的过程是先使用`scoop list`列出已装软件信息；然后传递给`grep`，只选第一个单词，即软件名称；再传给`sed`在软件名称前插入`scoop install`，组成安装命令；最后保存为文件。上述命令可简化为：
-
-```ps
-scoop list | sed 's/^\(\w*\).*/scoop install \1/' > scoop-install-apps.ps1
-```
+以上命令的过程是先使用`scoop list`列出已装软件信息；然后传递给`grep`，只选软件名称；再传给`sed`在软件名称前插入`scoop install`，组成安装命令；最后保存为文件。
 
 得到的文件内容是：
 
