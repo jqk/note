@@ -58,9 +58,9 @@ Executing: /lib/systemd/systemd-sysv-install enable docker
 
 ### 2.2  离线安装
 
-从[docker官网](https://download.docker.com/linux/static/stable/x86_64/)下载所需镜像。离线安装选择的是截止到`2020-02-15`的最新版本：`docker-19.03.6.tgz`，将其下载到`实验目录`下。
+从[docker官网](https://download.docker.com/linux/static/stable/x86_64/)下载所需镜像。离线安装选择的是截止到`2020-03-11`的最新版本：`docker-19.03.8.tgz`，将其下载到`实验目录`下。
 
-建立系统配置文件`docker.service`：
+在`实验目录`下建立系统配置文件`docker.service`：
 
 ```text
 [Unit]
@@ -98,7 +98,7 @@ StartLimitInterval=60s
 WantedBy=multi-user.target
 ```
 
-建立脚本文件`install-docker.sh'：
+在`实验目录`下建立脚本文件`install-docker.sh'：
 
 ```bash
 #!/bin/sh
@@ -127,7 +127,7 @@ echo 'docker安装成功...'
 docker -v
 ```
 
-建立卸载文件`uninstall-docker.sh`：
+在`实验目录`下建立卸载文件`uninstall-docker.sh`：
 
 ```bash
 #!/bin/sh
@@ -147,7 +147,7 @@ echo '卸载成功...'
 安装`docker`：
 
 ```bash
-$ sudo ./install-docker.sh docker-19.03.6.tgz
+$ sudo ./install-docker.sh docker-19.03.8.tgz
 解压tar包...
 docker/
 docker/containerd
@@ -166,12 +166,12 @@ docker/containerd-shim
 设置开机自启...
 Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /etc/systemd/system/docker.service.
 docker安装成功...
-Docker version 19.03.6, build 369ce74a3c
+Docker version 19.03.8, build 369ce74a3c
 ```
 
 ### 2.3  更改镜像源
 
-`docker`的镜像仓库在国外，下载相对较慢，所以启用阿里云加速。在生产环境无法联网，可忽略此步。
+`docker`的镜像仓库在国外，下载相对较慢，所以启用阿里云加速。**在生产环境无法联网，可忽略此步**。
 
 在`/etc/docker`目录下创建`daemon.json`文件，添加如下内容：
 
@@ -821,7 +821,7 @@ $ docker start yxy-simple-long
 删除容器命令只能删除已停止的容器。正在运行的容器必须先停止，再删除。**删除容器命令**如下：
 
 1. `docker container prune`：删除所有已停止的容器。
-2. `docker rm <容器名称或ID＞`：删除指定的已停止的容器。
+2. `docker rm <容器名称或ID>`：删除指定的已停止的容器。
 
 **停止容器命令**如下：
 
@@ -873,9 +873,9 @@ drwxr-xr-x 2 jason jason    4096 2月  21 09:59 simpleLog/
 
 将为`yxy-log`构建两个不同的镜像：
 
-| 镜像名称    | Dockerfile             | 内容及目的                                          |
-| ----------- | ---------------------- | --------------------------------------------------- |
-| yxy/log-dir | yxy-log-dir.dockerfile | 通过复制文件目录构建，包含日志配置文件              |
+| 镜像名称 | Dockerfile | 内容及目的 |
+| ----------- | ---------------------- | ----------------------------------- |
+| yxy/log-dir | yxy-log-dir.dockerfile | 通过复制文件目录构建，包含日志配置文件 |
 | yxy/log-tar | yxy-log-tar.dockerfile | 通过压缩文件构建，只包含 jar 包，不包含日志配置文件 |
 
 根据以上文件名为建立`Dockerfile`，为避免重复，在下面示例中加入注释以区别不同内容：
@@ -1219,6 +1219,8 @@ $ docker start yxy-web-map
 1. [优雅的终止 docker 容器](https://xiaozhou.net/stop-docker-container-gracefully-2016-09-08.html)：对如何结束容器的说明很细，有`go`语言获取`SIGTERM`信号的示例。
 1. [IntelliJ IDEA 快速实现 Docker 镜像部署](https://my.oschina.net/wuweixiang/blog/2874064)：应该是一系统文章的一部分。尚未尝试。
 1. [IntelliJ IDEA 安装 docker 插件](https://blog.csdn.net/sealir/article/details/81200662)：未尝试。
+1. [使用 docker 对容器资源进行限制](https://www.jianshu.com/p/9d1c4cddeaac)：关于内存及CPU都有说明。
+1. [docker-限制CPU使用](https://www.cnblogs.com/lingkong/p/11172073.html)：只对CPU进行说明，比较细。
 
 ### 6.2  教程
 
