@@ -79,7 +79,59 @@ mklink /J .vscode E:\Data\Jason\.vscode
 
 #### 3.6.2 设置python环境
 
+确保以下两件事：
+
+1. `Python`语言环境已通过`Scoop`安装。
+2. `vscode`已通过`Scoop`安装。
+
+执行以下脚本，可能需要科学上网：
+
+```dos
+pip install flake8
+pip install yapf
+```
+
+运行`vscode`并安装微软官方`python`插件。
+
+最后建立`lauch.json`，内容如下，可运行，但尚未探索：
+
+```json
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "yapf",
+    "python.linting.flake8Args": ["--max-line-length=248"],
+    "python.linting.pylintEnabled": false
+```
+
 #### 3.6.3 设置golang环境
+
+确保以下两件事：
+
+1. `Go`语言环境已通过`Scoop`安装。
+2. `vscode`已通过`Scoop`安装。
+
+执行以下脚本：
+
+```ps
+$env:GOPATH='E:\vm_share\go'
+[Environment]::SetEnvironmentVariable('GOPATH', $env:GOPATH, 'User')
+
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.cn,direct
+```
+
+**注**：设置`GOPROXY`为`https://goproxy.io,direct`亦可。
+
+运行`vscode`，安装微软官方的`Go`插件。
+
+建立一个`.go`文件。此时`vscode`会提示安装`Go`的依赖工具，选择`Install All`。等待其安装完毕。然后执行：
+
+```ps
+go env -w GO111MODULE=auto
+```
+
+目前看，设置其为`off`也可以，但使用`on`，总报找不到`module`错误。
+
+最后建立`lauch.json`，使用默认值即可。其它开关尚未探索。
 
 ### 3.7 cmder
 
@@ -110,6 +162,13 @@ reg delete "HKEY_CURRENT_USER\Software\Scooter Software\Beyond Compare 4" /v Cac
 ### 4.3 VMware
 
 注册并打开已建立的虚拟机。
+
+```text
+VZ182-0NDE6-0817Y-KMMZZ-YKAC4
+ZC75R-0YW5P-H809Y-QYWQZ-NZ8G8
+ZV7XK-02D56-480JZ-ENZEX-YF8XD
+YC588-FTDDL-H852Y-UXYGE-YZKE2
+```
 
 ### 4.4 IntelliJ Idea
 
