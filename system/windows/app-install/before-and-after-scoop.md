@@ -19,7 +19,8 @@
 1. welink
 1. ea
 1. 知之阅读
-1. Visual Studio Team Explorer
+1. Visual Studio Team Explorer或Visual Studio
+2. 腾讯会议
 
 ## 三、 设置免费软件
 
@@ -93,7 +94,7 @@ pip install yapf
 
 运行`vscode`并安装微软官方`python`插件。
 
-最后建立`lauch.json`，内容如下，可运行，但尚未探索：
+最后建立`launch.json`，内容如下，可运行，但尚未探索：
 
 ```json
     "python.linting.flake8Enabled": true,
@@ -141,6 +142,19 @@ go env -w GO111MODULE=auto
 
 ### 4.1 Listary
 
+姓    名（Name）：Vovan
+邮    箱（Email）：vovan666@6n8d7oa
+序 列 号（Code）：
+
+```text
+66666666666666666666666666666666
+66666666666666666666666666666666
+66666666666666666666666666666666
+66666666666666666666666666666666
+66666666666666666666666666666666
+66666666666666666666666666666666
+```
+
 ### 4.2 BeyondCompare
 
 执行以下命令复位试用时间：
@@ -182,7 +196,17 @@ rd config
 mklink /J config E:\Data\idea_config
 ```
 
-### 4.5 EA
+### 4.5 Visual Studio
+
+* Visual Studio 2019 Enterprise（企业版） KEY：`BF8Y8-GN2QH-T84XB-QVY3B-RC4DF`
+* Visual Studio 2019 Professional（专业版） KEY：`NYWVH-HT4XC-R2WYW-9Y3CM-X4V3Y`
+* Visual Studio 2017 Enterprise（企业版） KEY：`NJVYC-BMHX2-G77MM-4XJMR-6Q8QF`
+* Visual Studio 2017 Professional（专业版） KEY：`KBJFW-NXHK6-W4WJM-CRMQB-G3CDH`
+* Visual Studio 2013 Ultimate（旗舰版） KEY：`BWG7X-J98B3-W34RT-33B3R-JVYW9`
+* Visual Studio 2013 Premium（高级版） KEY：`FBJVC-3CMTX-D8DVP-RTQCT-92494`
+* Visual Studio 2013 Professional （专业版） KEY： `XDM3T-W3T3V-MGJWK-8BFVD-GVPKY`
+
+### 4.6 EA
 
 注册EA。
 
