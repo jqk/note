@@ -798,6 +798,14 @@ scoop update
 
 应查看哪些程序需运行额外的`.reg`文件，例如`notepadplusplus`和`vscode`都需导入注册表信息以添加右键菜单。
 
+## 精简总结
+
+```ps
+sudo Add-MpPreference -ExclusionPath 'C:\Scoop'
+ Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -Value 1
+ sudo Add-MpPreference -ExclusionPath 'C:\ScoopApps'
+```
+
 ## 十、 参考资料
 
 《[Windows包管理工具：Scoop 介绍](https://blog.csdn.net/Edisonleeee/article/details/94748703)》有对于自建`bucket`的简单说明。

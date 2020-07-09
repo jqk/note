@@ -12,15 +12,36 @@
 
 包含已保存的书签及打开未关闭的，需要保留的网址。
 
+### 1.3 备份Scoop安装列表
+
+必须在`Cmder`下才能执行如下命令自动生成安装列表：
+
+```ps
+scoop list | grep -o -E "^[ ]+\w+(\-\w+)*" | sed 's/^\s*\(.*\)/scoop install \1/' > scoop-install-apps.ps1
+```
+
+可考虑加`-g`参数，以将程序安装到指定目录。
+
+### 1.4 备份vscode
+
+一是`Shift+Alt+U`上传到`Github Gist`，另一个是备份`C:\Users<你的用户名>\AppData\Roaming\Code\User\syncLocalSettings.json`，该文件中有`Gist`使用的`token`。
+
+### 1.5 java依赖库
+
+`C:\Users\Jason\.m2`和`C:\Users\Jason\.gradle`。貌似前者是`maven`库文件，后者只是`gradle`程序。
+
 ## 二、 安装scoop中没有的软件
 
 1. TIM
-1. 小鱼易连
-1. welink
-1. ea
-1. 知之阅读
-1. Visual Studio Team Explorer或Visual Studio
-2. 腾讯会议
+2. 小鱼易连
+3. welink
+4. ea
+5. 知之阅读
+6. Visual Studio Team Explorer或Visual Studio
+7. 腾讯会议
+8. FxPro cTrader
+9. BookXNote
+10. EasyBCD
 
 ## 三、 设置免费软件
 
@@ -35,6 +56,10 @@
 1. chrome
 2. firefox
 3. opera
+
+`Chrome`主要插件有：
+
+`AdblokcPlus`、`WizClipper`、`Print friendly & PDF`、`IE Tab`、`sourcegraph`
 
 ### 3.3 为知笔记
 
@@ -77,6 +102,8 @@ mklink /J "My Knowledge" E:\Data\Wiz
 ```dos
 mklink /J .vscode E:\Data\Jason\.vscode
 ```
+
+VSCODE settings sync plugin: `sync.gist`: `9a4dff6cfe81c64a10f279dca62ce7ba0a567d`
 
 #### 3.6.2 设置python环境
 
@@ -137,6 +164,47 @@ go env -w GO111MODULE=auto
 ### 3.7 cmder
 
 使用备份的`user-ConEmu.xml`、`user_aliases.cmd`和`user_profile.cmd`替换`C:\Scoop\apps\cmder\current\config`中的同名文件。
+
+### 3.8 Windows Terminal
+
+```registry
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\WindowsTerminal]
+@="Windows Terminal Here"
+"Icon"="D:\\Program Files\\Scoop\\apps\\WindowsTerminal\\current\\Images\\Square44x44Logo.targetsize-32.png"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\WindowsTerminal\command]
+@="D:\\Program Files\\Scoop\\apps\\WindowsTerminal\\current\\WindowsTerminal.exe"
+```
+
+当前目录打开时，Terminal 里的路径不是当前目录。检查一下配置文件，看下是否有以下内容，删除之后就可以了。
+
+```json
+{
+    "profiles": [
+        {
+            "startingDirectory" : "%USERPROFILE%"
+        }
+    ]
+}
+```
+
+需要修改为：
+
+```json
+{
+    "profiles": [
+        {
+            "startingDirectory" : null
+        }
+    ]
+}
+```
+
+配置文件路径：
+
+`C:\Users\jason\AppData\Local\Microsoft\Windows Terminal\profiles.json`
 
 ## 四、 注册软件
 
@@ -214,7 +282,7 @@ mklink /J config E:\Data\idea_config
 
 ### 5.1 打印机
 
-Canon激光打印机`iR2202_2002`。
+Canon激光打印机`iR2202_2002`。地址是`172.35.4.202`。
 
 ### 5.2 快捷面板
 
