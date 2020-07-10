@@ -196,7 +196,9 @@ Windows Registry Editor Version 5.00
 {
     "profiles": [
         {
-            "startingDirectory" : null
+            "startingDirectory" : null,
+            "backgroundImage":"E:\\Data\\Jason\\Pictures\\爱壁纸UWP\\风景\\风景 - 9.jpg",
+            "backgroudImageOpacity":0.5
         }
     ]
 }

@@ -80,6 +80,8 @@ scoop bucket add nonportable
 scoop update
 ```
 
+同一个应用程序可能出现在不同的bucket中。不同的添加顺序是否对其有影响，尚不确定，但貌似是按bucket名称顺序获取的。
+
 ## 五、 4.1 安装应用程序
 
 执行通过如下语句生成的文件`scoop4-install-apps.ps1`：
@@ -89,6 +91,13 @@ scoop list | grep -o -E "^[ ]+\w+(\-\w+)*" | sed 's/^\s*\(.*\)/scoop install \1/
 ```
 
 以上命令必须在`Cmder`中执行。生成的文件需在`PowerShell`中执行。
+
+有些导出的软件名称与实际安装时需要的名称不对应，以下为两例，需手工修改：
+
+1. `draw`改为`draw.io`
+1. `paint`改为`paint.net`
+
+刚刚安装上时默认使用`aria2`进行下载。有部份应用可能下载失败。此时应执行`scoop config aria2-enabled false`，然后再次重试。如果下载不成功，就需要科学上网了。
 
 ## 六、 4.2 配置应用程序
 
