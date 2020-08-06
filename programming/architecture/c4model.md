@@ -1,5 +1,7 @@
 # C4模型 - 可视化架构设计
 
+当前Markdown文档使用[Markdown Header Indexer](https://github.com/jqk/markdown-header-indexer)格式化标题序号。
+
 ## 一、 简介及参考
 
 `C4模型`是一种使用简单图形符号表达软件架构的方法模型。相比于`Unified Modeling Language (UML)`、`ArchiMate`和`SysML`等传统架构设计软件，其最大的优点就是使用极为简单的图形符号对架构进行分级描述，使非技术人员与技术人员、架构师和程序员、开发人员和维护人员均能比较直观地理解系统组成及系统各部分之间的协作关系。
