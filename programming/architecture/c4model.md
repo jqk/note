@@ -10,7 +10,7 @@
 
 以下为参考资料：
 
-* [The C4 model for visualizing software architecture](https://c4model.com/)，官方网站。本方翻译并重新组织了文档内容。
+* [The C4 model for visualizing software architecture](https://c4model.com/)，官方网站。**本文翻译并重新组织了文档内容。**
 * [用于软件架构的 C4 模型](https://www.infoq.cn/article/C4-architecture-model/)，官网上提供的中文链接，但少了许多内容，只有对于`C4模型`所谓4层结构的翻译。
 * [C4 Model, Architecture Viewpoint and Archi 4.7](https://www.archimatetool.com/blog/2020/04/18/c4-model-architecture-viewpoint-and-archi-4-7/)，官网提供的使用`ArchiMate`工具画`C4模型`图的说明。
 * [可视化架构设计——C4介绍](https://www.jianshu.com/p/33c6a7ed126f)，对`C4模型`比较好的翻译及介绍，有作者自己的使用体会及分析。
@@ -20,7 +20,7 @@
 
 ### 2.1 C4模型的图形符号
 
-`C4模型`不使用特定的图形符号：
+`C4模型`不使用特定的图形符号，仅使用以下简单的、可以轻松在白板上绘制的图形符号：
 
 ![C4图形符号](https://c4model.com/img/bigbankplc-Containers-key.png)
 
@@ -63,13 +63,15 @@
 
 #### 2.2.5 层次结构
 
+为了创建软件系统与现实环境的映射，需要一组用于描述软件系统静态结构的通用语言。`C4模型`从容器、组件和代码的角度考虑软件系统的静态结构。
+
 ![层次图1](https://c4model.com/img/abstractions.png)
 
 在`C4模型`中，`软件系统`由一个或多个`容器`（web应用程序、移动应用程序、桌面应用程序、数据库、文件系统等）组成。每个`容器`包含一个或多个`组件`，这些`组件`又由一组或多组`代码`（例如类、接口、对象、函数等）实现。
 
 ![层次图2](https://c4model.com/img/model.png)
 
-以上是一个可视化软件架构模型示例。它显示了构成静态结构的元素的层次结构。
+以上是一个可视化软件架构模型示例。它显示了构成软件系统静态结构的元素的层次结构。
 
 ### 2.3 核心图
 
@@ -189,29 +191,79 @@
 * **支撑元素**：软件系统部署中使用的基础结构节点。
 * **目标受众**：软件开发团队内外的技术人员；包括软件架构师、开发人员、基础设施架构师和操作/支持人员。
 
-## 三、 绘图建议
+### 2.5 绘图建议
 
-### 3.1 视图
+#### 2.5.1 视图
 
 * 每个图都应该有一个描述图类型和范围的标题（例如`XX软件系统的概念图`）。
 * 每个图都应该有一个图例来解释所使用的符号（例如形状、颜色、边框样式、线型、箭头等）。
 * 缩略语（业务/领域或技术）应为所有受众所理解，或在图例中解释。
 
-### 3.2 图中的元素
+#### 2.5.2 图中的元素
 
 * 每个元素的类型都应明确规定（如人员、软件系统、容器或组件）。
 * 每个元素都应该有一个简短的描述，以使关键职责`一目了然`。
 * 每个容器和组件都应该有指定明确的技术。
 
-### 3.3 元素间的关系
+#### 2.5.3 元素间的关系
 
 * 每一条线都应该代表一个单向关系。
 * 每一条线都应该贴上标签。标签与关系的方向和意图一致（例如依赖关系或数据流）。标签尽量具体，最好避免使用诸如`使用`这样的单字。
 * 容器之间的关系（通常表示进程间通信）应该明确标记使用的技术/协议。
 
-## 四、 更多的示例
+#### 2.5.4 检查项列表
+
+##### 2.5.4.1 通用
+
+* 视图有标题吗？
+* 你明确理解视图的类型吗？
+* 你知道视图的作用域，即应用范围吗？
+* 视图包含图例了吗？
+
+##### 2.5.4.2 元素
+
+* 每个元素都有名称吗？
+* 你明确理解每个元素的类型吗？
+* 你是否理解每个元素的任务/功能是什么？
+* 如果给予了技术标记，你是否明白元素所使用技术？
+* 你了解每个缩略语的意义吗？
+* 你明白不同的颜色在视图中表示的不同意义吗？
+* 你明白不同的开关在视图中表示的不同意义吗？
+* 你是否了解不同的线型（实线/虚线）所表示的意义吗？
+
+##### 2.5.4.3 元素间的关系
+
+* 每条关系线都有标签吗？
+* 如果给予了技术标记，你是否明白关系线所使用技术？
+* 你了解每个缩略语的意义吗？
+* 你明白不同的颜色在视图中表示的不同意义吗？
+* 你是否了解箭头方向表示的意义？
+* 你是否了解不同的线型（实线/虚线）所表示的意义吗？
+
+## 三、 更多的示例
 
 * [Big Bank plc](https://structurizr.com/share/36141#SystemContext)：系统场景图、概念图、容器图、组件图、动态图和部署图。
 * [Financial Risk System](https://structurizr.com/share/31)：概念图。
 * [Spring PetClinic](https://structurizr.com/share/1#components)：概念图、容器图、组件图、动态图和部署图。
 * [Message bus and micro services](https://structurizr.com/share/4241#CustomerUpdateEvent)：容器图和动态图。
+
+## 四、 工具
+
+### 4.1 建模工具
+
+| 软件名称 | 建模方法 | 编辑和存储 | 免费 |
+| :---- | :----: | :----: | :----: |
+| [Structurizr](https://structurizr.com/) | Text/GUI | Cloud/Local | Limit |
+| [Archi](https://www.archimatetool.com/) | GUI | Local | Yes |
+| [Sparx Enterprise Architect](http://www.sparxsystems.eu/c4/) | GUI | Local | No |
+| [MooD](https://supportportal.moodinternational.com/hc/en-us/articles/360015465100-MooD-and-the-C4-model) | GUI | Cloud/Local | No |
+
+### 4.2 绘图工具
+
+| 软件名称 | 建模方法 | 编辑和存储 | 免费 |
+| :---- | :----: | :----: | :----: |
+| [PlantUML](https://plantuml.com/) | Text | Cloud/Local | Yes |
+| [diagrams.net](https://app.diagrams.net/?libs=c4) | GUI | Cloud/Local | Yes |
+| [draw.io](https://draw.io) | GUI | Cloud/Local | Yes |
+| [OmniGraffle](https://stenciltown.omnigroup.com/stencils/c4/) | GUI | Local | No |
+| [Microsoft Visio](https://github.com/pihalve/c4model-visio-stencil) | GUI | Cloud/Local | No |
