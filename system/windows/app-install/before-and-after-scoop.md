@@ -67,7 +67,7 @@ scoop list | grep -o -E "^[ ]+\w+(\-\w+)*" | sed 's/^\s*\(.*\)/scoop install \1/
 
 ```cmd
 c:
-cd \Scoop\apps\wiznote\current
+cd \Scoop\persist\wiznote\current
 rd "My Knowledge"
 mklink /J "My Knowledge" E:\Data\Wiz
 ```
